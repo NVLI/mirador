@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * A light-weight, customizable midrador plugin for jQuery.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function mirador_theme() {
+  return array(
+    'mirador_formatter' => array(
+      'variables' => array(
+        'item' => NULL,
+        'entity' => NULL,
+        'settings' => NULL,
+      ),
+      'file' => 'mirador.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function mirador_libraries_info() {
+  $libraries['mirador'] = array(
+    'name' => 'Mirador plugin',
+    'vendor url' => 'http://projectmirador.org/',
+    'download url' => 'https://github.com/IIIF/mirador/archive/release2.1.zip',
+    'version arguments' => array(
+      'file' => 'mirador.js',
+      'pattern' => '@(?i:mirador)\sv?([0-9\.a-z]+)@',
+      'lines' => 5,
+    ),
+    'files' => array(
+      'js' => array(
+        'mirador.js',
+      ),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'mirador-min.js',
+          ),
+        ),
+      ),
+      'source' => array(
+        'files' => array(
+          'js' => array(
+            'mirador.js',
+          ),
+        ),
+      ),
+    ),
+  );
+  return $libraries;
+}
