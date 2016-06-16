@@ -25,7 +25,7 @@ use Drupal\image\Entity\ImageStyle;
  */
 function template_preprocess_mirador_formatter(&$variables) {
   static $gallery_token = NULL;
-
+  $caption = NULL;
   $item = $variables['item'];
   $item_attributes = isset($variables['item_attributes']) ? $variables['item_attributes'] : array();
   $entity = $variables['entity'];

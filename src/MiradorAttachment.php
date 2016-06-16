@@ -55,31 +55,8 @@ class MiradorAttachment implements ElementAttachmentInterface {
    * {@inheritdoc}
    */
   public function attach(array &$page) {
-    if ($this->settings->get('custom.activate')) {
-      $js_settings = array(
-
-      );
-    }
-    else {
-      $js_settings = array(
-
-      );
-    }
-
-    $style = $this->settings->get('custom.style');
-
-    // Add mirador js settings.
-    $page['#attached']['drupalSettings']['mirador'] = $js_settings;
-
-    // Add and initialise the Mirador plugin.
-    if ($this->settings->get('advanced.compression_type' == 'minified')) {
-      $page['#attached']['library'][] = 'mirador/mirador';
-    }
-
-    // Add JS and CSS based on selected style.
-    if ($style != 'none') {
-      $page['#attached']['library'][] = "mirador/$style";
-    }
+    $page['#attached']['library'][] = 'mirador/mirador';
+    $page['#attached']['library'][] = 'mirador/init';
   }
 
 }

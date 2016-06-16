@@ -5,3 +5,4 @@ services:
   mirador.attachment:
     class: Drupal\mirador\MiradorAttachment
     arguments: ['@mirador.activation_check', '@module_handler', '@config.factory']
+

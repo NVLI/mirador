@@ -8,7 +8,14 @@ mirador:
     /libraries/mirador/mirador.js: { minified: false }
   css:
     theme:
-      /libraries/mirador/mirador-combined.css: {}
+      /libraries/mirador/css/mirador-combined.css: {}
   dependencies:
     - core/jquery
     - core/jquery.once
+init:
+  version: VERSION
+  js:
+    js/mirador-load.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
