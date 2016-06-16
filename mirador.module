@@ -40,13 +40,6 @@ function mirador_libraries_info() {
       ),
     ),
     'variants' => array(
-      'minified' => array(
-        'files' => array(
-          'js' => array(
-            'mirador-min.js',
-          ),
-        ),
-      ),
       'source' => array(
         'files' => array(
           'js' => array(

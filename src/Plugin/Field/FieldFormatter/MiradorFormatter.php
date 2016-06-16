@@ -8,6 +8,7 @@
 
 namespace Drupal\mirador\Plugin\Field\FieldFormatter;
 
+use Drupal\mirador\ElementAttachmentInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -55,7 +56,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
    *   The view mode.
    * @param array $third_party_settings
    *   Any third party settings settings.
-   * @param \Drupal\colorbox\ElementAttachmentInterface $attachment
+   * @param \Drupal\mirador\ElementAttachmentInterface $attachment
    *   Allow the library to be attached to the page.
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, EntityStorageInterface $image_style_storage, ElementAttachmentInterface $attachment) {
@@ -87,9 +88,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
   public static function defaultSettings() {
     return array(
       'mirador_node_style' => '',
-      'mirador_label' => '',
-      'mirador_description' => '',
-      'mirador_author' => '',
+      'mirador_settings' => '',
     ) + parent::defaultSettings();
   }
 
@@ -109,23 +108,11 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
       '#options' => $image_styles_hide,
       '#description' => t('Image style to use in the content.'),
     );
-    $element['mirador_label'] = array(
-      '#title' => t('Mirador Label'),
-      '#type' => 'textfield',
-      '#default_value' => $this->getSetting('mirador_label'),
+    $element['mirador_settings'] = array(
+      '#title' => t('Mirador Settings'),
+      '#type' => 'textarea',
+      '#default_value' => $this->getSetting('mirador_settings'),
       '#description' => t('Label to be used for mirador'),
-    );
-    $element['mirador_description'] = array(
-      '#title' => t('Mirador Description'),
-      '#type' => 'textfield',
-      '#default_value' => $this->getSetting('mirador_description'),
-      '#description' => t('Description to be used for mirador'),
-    );
-    $element['mirador_author'] = array(
-      '#title' => t('Mirador Author'),
-      '#type' => 'textfield',
-      '#default_value' => $this->getSetting('mirador_author'),
-      '#description' => t('Author to be used for mirador'),
     );
     return $element;
   }
@@ -135,7 +122,6 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
    */
   public function settingsSummary() {
     $summary = array();
-
     $image_styles = image_style_options(FALSE);
     // Unset possible 'No defined styles' option.
     unset($image_styles['']);
@@ -150,15 +136,8 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
     else {
       $summary[] = t('Content image style: Original image');
     }
-
-    if ($this->getSetting('mirador_label')) {
-      $summary[] = t('labels used: @style', array('@style' => $this->getSetting('mirador_label')));
-    }
-    if ($this->getSetting('mirador_description')) {
-      $summary[] = t('Descriptions used: @style', array('@style' => $this->getSetting('mirador_description')));
-    }
-    if ($this->getSetting('mirador_author')) {
-      $summary[] = t('Author used: @style', array('@style' => $this->getSetting('mirador_author')));
+    if ($this->getSetting('mirador_settings')) {
+      $summary[] = t('Mirador Settings: @style', array('@style' => $this->getSetting('mirador_settings')));
     }
 
     return $summary;
@@ -185,7 +164,6 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
     }
     $cache_tags_first = array();
 
-
     foreach ($files as $delta => $file) {
       // Check if first image should have separate image style.
       $settings['style_name'] = $settings['mirador_node_style'];
@@ -209,7 +187,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
       );
     }
 
-    // Attach the Colorbox JS and CSS.
+    // Attach the Mirado JS and CSS.
     if ($this->attachment->isApplicable()) {
       $this->attachment->attach($elements);
     }

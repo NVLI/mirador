@@ -1,0 +1,14 @@
+mirador:
+  remote: http://projectmirador.org/
+  version: VERSION
+  license:
+    name: MIT
+    gpl-compatible: false
+  js:
+    /libraries/mirador/mirador.js: { minified: false }
+  css:
+    theme:
+      /libraries/mirador/mirador-combined.css: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once

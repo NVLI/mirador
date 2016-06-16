@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Colorbox theme functions.
+ * Mirador theme functions.
  */
 
 use Drupal\Core\Template\Attribute;
