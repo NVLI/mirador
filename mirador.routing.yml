@@ -1,0 +1,13 @@
+mirador.admin_settings:
+  path: '/admin/config/media/mirador'
+  defaults:
+    _form: '\Drupal\Mirador\Form\MiradorSettingsForm'
+    _title: 'Mirador settings'
+  requirements:
+    _permission: 'administer site configuration'
+mirador.manifest:
+  path: '/mirador/manifest/{entityType}/{fieldName}/{entityId}'
+  defaults:
+    _controller: '\Drupal\mirador\Controller\MiradorManifestController::getManifest'
+  requirements:
+    _permission: 'access content'

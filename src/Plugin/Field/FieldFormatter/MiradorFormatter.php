@@ -150,7 +150,6 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
     $elements = array();
     $settings = $this->getSettings();
     $files = $this->getEntitiesToView($items, $langcode);
-
     // Early opt-out if the field is empty.
     if (empty($files)) {
       return $elements;

@@ -33,7 +33,6 @@ function template_preprocess_mirador_formatter(&$variables) {
   $variables = array(); // Reset the $variables parameter.
   $image_uri = $item->entity->getFileUri();
   $classes_array = array('mirador');
-
   // Build the caption.
   $entity_title = $entity->label();
   $entity_type = $entity->bundle();
@@ -43,8 +42,13 @@ function template_preprocess_mirador_formatter(&$variables) {
   $id = $entity->id();
   $entity_id = !empty($id) ? $entity_type . '-' . $id : 'entity-id';
   $field_name = $item->getParent()->getName();
-
-
+  $manifest_settings = array(
+    'entity' => $entity_type,
+    'field_name' => $field_name,
+    'entity_id' => $id,
+  );
+  $manifest_settings = json_encode($manifest_settings, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+  $variables['#attached']['drupalSettings']['init']['entity']['entityInfo'] = $manifest_settings;
 
   // Set up the $variables['image'] parameter.
   if ($settings['style_name'] == 'hide') {
