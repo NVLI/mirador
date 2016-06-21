@@ -9,6 +9,7 @@ use Drupal\Core\Template\Attribute;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Unicode;
 use Drupal\image\Entity\ImageStyle;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * Prepares variables for mirador formatter templates.
@@ -37,11 +38,11 @@ function template_preprocess_mirador_formatter(&$variables) {
   $entity_title = $entity->label();
   $entity_type = $entity->bundle();
 
-
   // Build the gallery id.
   $id = $entity->id();
   $entity_id = !empty($id) ? $entity_type . '-' . $id : 'entity-id';
   $field_name = $item->getParent()->getName();
+
   $manifest_settings = array(
     'entity' => $entity_type,
     'field_name' => $field_name,
@@ -49,6 +50,13 @@ function template_preprocess_mirador_formatter(&$variables) {
   );
   $manifest_settings = json_encode($manifest_settings, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
   $variables['#attached']['drupalSettings']['init']['entity']['entityInfo'] = $manifest_settings;
+
+  // Parse the mirador settings YAML.
+  $yaml = new Parser();
+  $miradorSettingsArray = $yaml->parse($settings['mirador_settings']);
+  $miradorSettings = serialize($miradorSettingsArray);
+  // Pass the settings to jquery.
+  $variables['#attached']['drupalSettings']['init']['entity']['settings'] = $miradorSettings;
 
   // Set up the $variables['image'] parameter.
   if ($settings['style_name'] == 'hide') {
@@ -106,7 +114,6 @@ function template_preprocess_mirador_formatter(&$variables) {
       $caption = $file_array['field_image_alt_text'][0]['value'];
     }
   }
-
   $variables['attributes'] = new Attribute();
   $variables['attributes']['title'] = $caption;
   $variables['attributes']['class'] = $classes_array;

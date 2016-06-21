@@ -21,9 +21,15 @@ class SharedCanvasManifest {
    * @param unknown $metadata_uri
    * @param string $object_label
    */
-  function __construct($id, $label) {
+  function __construct($id, $label, $description, $attributes, $rights, $author, $date) {
     $this->id = $id;
     $this->object_label = $label;
+    $this->description = $description;
+    $this->attributes = $attributes;
+    $this->rights = $rights;
+    $this->author = $author;
+    $this->date = $date;
+
   }
 
   /**
@@ -46,6 +52,10 @@ class SharedCanvasManifest {
       '@id' => $this->id,
       '@type' => 'sc:Manifest',
       'label' => $this->object_label,
+      'description' => $this->description,
+      'attribution' => $this->attributes,
+      'author' => $this->author,
+      'date' => $this->date,
       'sequences' => array( // an array but will always be a single object in our application
         array(
           '@type' => 'sc:Sequence',

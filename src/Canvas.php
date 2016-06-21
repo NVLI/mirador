@@ -22,9 +22,7 @@ class Canvas {
 
   function __construct($id, $label) {
     $this->object_id = $id;
-    $this->pid = $pid;
     $this->object_label = $label;
-    $this->metadata_uri = $meta_uri;
   }
 
   function setImage($thumbnail_uri, $image_uri, $resource_uri, $format = 'image/jpeg', $width, $height) {

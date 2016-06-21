@@ -41,7 +41,7 @@ class MiradorAttachment implements ElementAttachmentInterface {
   public function __construct(ActivationCheckInterface $activation, ModuleHandlerInterface $module_handler, ConfigFactoryInterface $config) {
     $this->activation = $activation;
     $this->moduleHandler = $module_handler;
-    $this->settings = $config->get('mirador.settings');;
+    $this->settings = $config->get('mirador.settings');
   }
 
   /**
