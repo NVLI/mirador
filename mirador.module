@@ -6,6 +6,11 @@
  */
 
 /**
+ * The required mirador version.
+ */
+define('MIRADOR_MIN_PLUGIN_VERSION', '2.0');
+
+/**
  * Implements hook_theme().
  */
 function mirador_theme() {

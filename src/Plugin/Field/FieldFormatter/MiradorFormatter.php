@@ -112,7 +112,14 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
       '#title' => t('Mirador Settings'),
       '#type' => 'textarea',
       '#default_value' => $this->getSetting('mirador_settings'),
-      '#description' => t('Label to be used for mirador'),
+      '#description' => t('Please enter the mirador settings in YAML Format, ie key: field_machine_name.
+        allowed key values are: label, description, width, height, attribution, author, rights.
+        <br>
+        Eg: <pre>
+          label: title
+          description: body
+          attribution: title
+         </pre>'),
     );
     return $element;
   }
