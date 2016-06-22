@@ -27,6 +27,8 @@ use Symfony\Component\Yaml\Parser;
 function template_preprocess_mirador_formatter(&$variables) {
   static $gallery_token = NULL;
   $caption = NULL;
+  global $base_url;
+
   $item = $variables['item'];
   $item_attributes = isset($variables['item_attributes']) ? $variables['item_attributes'] : array();
   $entity = $variables['entity'];
@@ -34,29 +36,25 @@ function template_preprocess_mirador_formatter(&$variables) {
   $variables = array(); // Reset the $variables parameter.
   $image_uri = $item->entity->getFileUri();
   $classes_array = array('mirador');
+
   // Build the caption.
   $entity_title = $entity->label();
   $entity_type = $entity->bundle();
-
+  $EntityTypeId = $entity->getEntityTypeId();
   // Build the gallery id.
   $id = $entity->id();
   $entity_id = !empty($id) ? $entity_type . '-' . $id : 'entity-id';
   $field_name = $item->getParent()->getName();
   $mirador_viewer_id = 'image-viewer-' . $id;
-  $manifest_settings = array(
-    'entity' => $entity_type,
-    'field_name' => $field_name,
-    'entity_id' => $id,
-  );
-  $manifest_settings = json_encode($manifest_settings, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
-  $variables['#attached']['drupalSettings']['init']['entity']['entityInfo'] = $manifest_settings;
 
   // Parse the mirador settings YAML.
   $yaml = new Parser();
   $miradorSettingsArray = $yaml->parse($settings['mirador_settings']);
   $miradorSettings = serialize($miradorSettingsArray);
-  // Pass the settings to jquery.
-  $variables['#attached']['drupalSettings']['init']['entity']['settings'] = $miradorSettings;
+
+  // Generate manifest uri and pass to jquery.
+  $manifestUri = $base_url . '/mirador/manifest/' . $EntityTypeId . '/'. $field_name . '/' . $id . '/' . $miradorSettings;
+  $variables['#attached']['drupalSettings']['init']['entity']['manifest_uri'] = $manifestUri;
   $variables['#attached']['drupalSettings']['init']['entity']['viewer_id'] = $mirador_viewer_id;
 
   // Set up the $variables['image'] parameter.

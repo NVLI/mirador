@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Drupal\Component\Serialization\Json;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\Core\Form\ConfigFormBase;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Controller routines for page example routes.
@@ -28,8 +29,6 @@ class MiradorManifestController extends ControllerBase {
    * Page callback: Returns manifest json.
    */
   public function getManifest($entityType, $fieldName, $entityId, $settings) {
-    // Set a default label and description, if none specified by the user.
-    $label = $description = t("Mirador Viewer");
     // Set a default value for width and height, if none specified by the user.
     $width = $height = 4217;
     $author = $rights = $attributes = $date = NULL;
@@ -46,14 +45,22 @@ class MiradorManifestController extends ControllerBase {
     // Load the entity.
     // Assuming that the mirodar viewer will be attached always with node
     // entity type.
-    $entity = entity_load('node', $entityId);
+    $entity = entity_load($entityType, $entityId);
+
+    // Set a default label and description, if none specified by the user.
+    $label = $description = $entity->get('title')->getValue();
+
     // Get the image field value.
     $image = $entity->get($fieldName)->getValue();
     // Load the image and take file uri.
     $fid = $image[0]['target_id'];
     $file = file_load($fid);
-    $uri = $file->getFileUri();
 
+    // Get the file mimetype.
+    $mimeType = $file->get('filemime')->getValue();
+    $mimetype = $mimeType[0]['value'];
+
+    $uri = $file->getFileUri();
     // Exploding the image URI, as the public location
     // will be specified in IIF Server.
     $imagePath = explode("public://", $uri);
@@ -92,7 +99,7 @@ class MiradorManifestController extends ControllerBase {
       $attributes = $attributes[0]['value'];
       unset($settings['attribution']);
     }
-    // Fetch the dates value, if specified.
+    // Fetch the logo value, if specified.
     if (!empty($settings['logo'])) {
       $logo = $entity->get($settings['logo'])->getValue();
       $logo = $logo[0]['value'];
@@ -108,10 +115,9 @@ class MiradorManifestController extends ControllerBase {
     }
     // Create the resource URL.
     $resource_url = $iifImageServerLocation . $imagePath[1];
-    $mimetype = "image/jpg";
 
-    $id = $resource_url;
-    $canvas_id = $resource_url;
+    // Set the resource url as canvas and manifest ID.
+    $id = $canvas_id = $resource_url;
 
     // Create an instance of SharedCanvasManifest class.
     $manifest = new SharedCanvasManifest($id, $label, $description, $attributes, $license, $logo, $metadata);
@@ -122,28 +128,7 @@ class MiradorManifestController extends ControllerBase {
     $manifest->addCanvas($canvas);
 
     $sc_manifest = $manifest->getManifest();
-    $this->getJsonResponse($sc_manifest); exit();
+    return new JsonResponse( $sc_manifest );
   }
-
-  /**
-  * Serves common json response.
-  *
-  * @param $data
-  *   Response array for given request.
-  *
-  * @return JSON
-  *   The JSON array for the response.
-  */
-  public function getJsonResponse($data) {
-    $response = new Response();
-    if (!empty($data)) {
-      $response->setContent(Json::encode($data));
-      $response->setStatusCode(Response::HTTP_OK);
-      $response->headers->set('Content-Type', 'application/json');
-      // prints the HTTP headers followed by the content
-      return $response->send();
-    }
-  }
-
 }
 
