@@ -21,15 +21,14 @@ class SharedCanvasManifest {
    * @param unknown $metadata_uri
    * @param string $object_label
    */
-  function __construct($id, $label, $description, $attributes, $rights, $author, $date) {
+  function __construct($id, $label, $description, $attributes, $license, $logo, $metadata) {
     $this->id = $id;
     $this->object_label = $label;
     $this->description = $description;
     $this->attributes = $attributes;
-    $this->rights = $rights;
-    $this->author = $author;
-    $this->date = $date;
-
+    $this->license = $license;
+    $this->logo = $logo;
+    $this->metadata = $metadata;
   }
 
   /**
@@ -54,12 +53,13 @@ class SharedCanvasManifest {
       'label' => $this->object_label,
       'description' => $this->description,
       'attribution' => $this->attributes,
-      'author' => $this->author,
-      'date' => $this->date,
+      'licence' => $this->license,
+      'logo' => $this->logo,
+      'metadata' => $this->metadata,
       'sequences' => array( // an array but will always be a single object in our application
         array(
           '@type' => 'sc:Sequence',
-          'id' => 'http://dev.llgc.org.uk/iiif/examples/photos/sequence/Physical.json',
+          'id' => $this->id,
           'label' => $this->object_label . ', in order',
           'canvases' => $this->canvases
         )

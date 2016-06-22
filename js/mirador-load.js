@@ -4,10 +4,11 @@
       attach:function(context, settings) {
         var entityInfo = drupalSettings.init.entity.entityInfo;
         var entitySettings = drupalSettings.init.entity.settings;
+        var viewerID = drupalSettings.init.entity.viewer_id;
         var entityInfo = jQuery.parseJSON(entityInfo);
         var manifestUri = "http://mirador.local/mirador/manifest/" + entityInfo.entity + '/' + entityInfo.field_name + '/' + entityInfo.entity_id + '/' + entitySettings;
         Mirador({
-          "id": "image-viewer",
+          "id": viewerID,
           "layout": "1x1",
           'showAddFromURLBox' : false,
           "saveSession": false,

@@ -33,6 +33,7 @@ class MiradorManifestController extends ControllerBase {
     // Set a default value for width and height, if none specified by the user.
     $width = $height = 4217;
     $author = $rights = $attributes = $date = NULL;
+    $metadata = array();
 
     // Fetch the IIIF image server location from settings.
     $config = \Drupal::config('mirador.settings');
@@ -61,50 +62,59 @@ class MiradorManifestController extends ControllerBase {
     if (!empty($settings['label'])) {
       $label = $entity->get($settings['label'])->getValue();
       $label = $label[0]['value'];
+      unset($settings['label']);
     }
     // Fetch the description, if specified.
     if (!empty($settings['description'])) {
       $description = $entity->get($settings['description'])->getValue();
       $description = $description[0]['value'];
+      unset($settings['description']);
     }
     // Fetch the width, if specified.
     if (!empty($settings['width'])) {
       $width = $settings['width'];
+      unset($settings['width']);
     }
     // Fetch the height, if specified.
     if (!empty($settings['height'])) {
       $height = $settings['height'];
-    }
-    // Fetch the author, if specified.
-    if (!empty($settings['author'])) {
-      $author = $entity->get($settings['author'])->getValue();
-      $author = $author[0]['value'];
+      unset($settings['height']);
     }
     // Fetch the rights value, if specified.
-    if (!empty($settings['rights'])) {
-      $rights = $entity->get($settings['rights'])->getValue();
-      $rights = $rights[0]['value'];
+    if (!empty($settings['license'])) {
+      $license = $entity->get($settings['license'])->getValue();
+      $license = $rights[0]['license'];
+      unset($settings['license']);
     }
     // Fetch the $attributes value, if specified.
     if (!empty($settings['attribution'])) {
       $attributes = $entity->get($settings['attribution'])->getValue();
       $attributes = $attributes[0]['value'];
+      unset($settings['attribution']);
     }
     // Fetch the dates value, if specified.
-    if (!empty($settings['date'])) {
-      $date = $entity->get($settings['date'])->getValue();
-      $date = $date[0]['value'];
+    if (!empty($settings['logo'])) {
+      $logo = $entity->get($settings['logo'])->getValue();
+      $logo = $logo[0]['value'];
+      unset($settings['logo']);
     }
-
+    // Loop through the settings to generate metadata.
+    foreach ($settings as $key => $setting) {
+      $value = $entity->get($setting)->getValue();
+      $metadata[] = array(
+        'label' => $key,
+        'value' => $value[0]['value'],
+      );
+    }
     // Create the resource URL.
     $resource_url = $iifImageServerLocation . $imagePath[1];
     $mimetype = "image/jpg";
 
-    $id = "http://dev.llgc.org.uk/iiif/examples/photos/manifest.json";
-    $canvas_id = "http://dev.llgc.org.uk/iiif/examples/photos/canvas/3891256.json";
+    $id = $resource_url;
+    $canvas_id = $resource_url;
 
     // Create an instance of SharedCanvasManifest class.
-    $manifest = new SharedCanvasManifest($id, $label, $description, $attributes, $rights, $author, $date);
+    $manifest = new SharedCanvasManifest($id, $label, $description, $attributes, $license, $logo, $metadata);
 
     // Create canvas.
     $canvas = new Canvas($canvas_id, $label);

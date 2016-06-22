@@ -16,6 +16,9 @@ init:
   version: VERSION
   js:
     js/mirador-load.js: {}
+  css:
+    theme:
+      css/mirador.css: {}
   dependencies:
     - core/jquery
     - core/drupal

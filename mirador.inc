@@ -42,7 +42,7 @@ function template_preprocess_mirador_formatter(&$variables) {
   $id = $entity->id();
   $entity_id = !empty($id) ? $entity_type . '-' . $id : 'entity-id';
   $field_name = $item->getParent()->getName();
-
+  $mirador_viewer_id = 'image-viewer-' . $id;
   $manifest_settings = array(
     'entity' => $entity_type,
     'field_name' => $field_name,
@@ -57,6 +57,7 @@ function template_preprocess_mirador_formatter(&$variables) {
   $miradorSettings = serialize($miradorSettingsArray);
   // Pass the settings to jquery.
   $variables['#attached']['drupalSettings']['init']['entity']['settings'] = $miradorSettings;
+  $variables['#attached']['drupalSettings']['init']['entity']['viewer_id'] = $mirador_viewer_id;
 
   // Set up the $variables['image'] parameter.
   if ($settings['style_name'] == 'hide') {
@@ -117,4 +118,5 @@ function template_preprocess_mirador_formatter(&$variables) {
   $variables['attributes'] = new Attribute();
   $variables['attributes']['title'] = $caption;
   $variables['attributes']['class'] = $classes_array;
+  $variables['attributes']['id'] = $mirador_viewer_id;
 }
