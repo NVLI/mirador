@@ -36,15 +36,13 @@ class MiradorManifestController extends ControllerBase {
 
     // Fetch the IIIF image server location from settings.
     $config = \Drupal::config('mirador.settings');
-    $iifImageServerLocation = $config->get('iiif_server');
+    $iiifImageServerLocation = $config->get('iiif_server');
     // @to-do: Display a message if no server specified.
 
     // Unserialize the settings to get the settings array.
     $settings = unserialize($settings);
 
     // Load the entity.
-    // Assuming that the mirodar viewer will be attached always with node
-    // entity type.
     $entity = entity_load($entityType, $entityId);
 
     // Set a default label and description, if none specified by the user.
@@ -114,7 +112,7 @@ class MiradorManifestController extends ControllerBase {
       );
     }
     // Create the resource URL.
-    $resource_url = $iifImageServerLocation . $imagePath[1];
+    $resource_url = $iiifImageServerLocation . $imagePath[1];
 
     // Set the resource url as canvas and manifest ID.
     $id = $canvas_id = $resource_url;
