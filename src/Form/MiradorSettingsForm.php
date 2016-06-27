@@ -3,8 +3,10 @@
 /**
  * @file
  * Administrative class form for the mirador module.
+ *
  * Contains \Drupal\mirador\Form\MiradorSettingsForm.
  */
+
 namespace Drupal\mirador\Form;
 
 use Drupal\Core\Form\ConfigFormBase;

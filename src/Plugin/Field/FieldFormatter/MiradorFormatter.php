@@ -5,7 +5,6 @@
  * Contains \Drupal\mirador\Plugin\Field\FieldFormatter\MiradorFormatter.
  */
 
-
 namespace Drupal\mirador\Plugin\Field\FieldFormatter;
 
 use Drupal\mirador\ElementAttachmentInterface;
@@ -200,4 +199,5 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
 
     return $elements;
   }
+
 }

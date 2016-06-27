@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * An interface for attaching things to the built page.
+ */
 
 namespace Drupal\mirador;
 

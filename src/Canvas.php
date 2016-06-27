@@ -6,70 +6,73 @@
 
 namespace Drupal\mirador;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
+/**
+ * Creates canvas for mirador.
+ */
 class Canvas {
-  protected $object_id;
-  protected $pid;
-  protected $object_label;
-  protected $metadata_uri;
-  protected $image_uri;
-  protected $image_format;
-  protected $image_height;
-  protected $image_width;
+  protected $objectId;
+  protected $objectLabel;
 
-
+  /**
+   * Initiate the canvas.
+   */
   function __construct($id, $label) {
-    $this->object_id = $id;
-    $this->object_label = $label;
+    $this->objectId = $id;
+    $this->objectLabel = $label;
   }
 
-  function setImage($thumbnail_uri, $image_uri, $resource_uri, $format = 'image/jpeg', $width, $height) {
+  /**
+   * Add image to canvas.
+   */
+  function setImage($thumbnail_uri, $image_uri, $resource_uri, $format, $width, $height) {
     $this->thumbnail_uri = $thumbnail_uri;
-    $this->image_uri = $image_uri;
+    $this->imageUri = $image_uri;
     $this->resource_uri = $resource_uri;
-    $this->image_format = $format;
-    $this->image_width = $width;
-    $this->image_height = $height;
+    $this->imageFormat = $format;
+    $this->imageWidth = $width;
+    $this->imageHeight = $height;
   }
 
+  /**
+   * Creates the manifest canvas array.
+   */
   function toArray() {
-    $manifestCanvas = array(
+    $manifest_canvas = array(
       '@type' => 'sc:Canvas',
-      '@id' => $this->object_id,
-      'label' => $this->object_label,
-      'height' => $this->image_height,
-      'width' => $this->image_width,
+      '@id' => $this->objectId,
+      'label' => $this->objectLabel,
+      'height' => $this->imageHeight,
+      'width' => $this->imageWidth,
       'thumbnail' => array(
         '@id' => $this->thumbnail_uri,
         'service' => array(
           '@context' => 'http://iiif.io/api/image/2/context.json',
           '@id' => $this->resource_uri,
-          'profile' => 'http://iiif.io/api/image/2/level2.json'
-        )
+          'profile' => 'http://iiif.io/api/image/2/level2.json',
+        ),
       ),
-      'images' => array( // always contain only one
+      'images' => array(
         array(
-          '@id' => $this->image_uri,
+          '@id' => $this->imageUri,
           '@type' => 'oa:Annotation',
           'motivation' => 'sc:Painting',
-          'on' => $this->object_id,
+          'on' => $this->objectId,
           'resource' => array(
             '@id' => $this->resource_uri,
             '@type' => 'dctypes:Image',
-            'format' => $this->image_format,
-            'height' => $this->image_height,
-            'width' => $this->image_width,
+            'format' => $this->imageFormat,
+            'height' => $this->imageHeight,
+            'width' => $this->imageWidth,
             'service' => array(
               '@context' => 'http://iiif.io/api/image/2/context.json',
               '@id' => $this->resource_uri,
-              'profile' => 'http://iiif.io/api/image/2/level2.json'
-            )
-          )
-        )
-      )
+              'profile' => 'http://iiif.io/api/image/2/level2.json',
+            ),
+          ),
+        ),
+      ),
     );
-    return $manifestCanvas;
+    return $manifest_canvas;
   }
+
 }

@@ -8,60 +8,52 @@
 namespace Drupal\mirador\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Url;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use \Drupal\user\Entity\User;
-use \Drupal\file\Entity\File;
 use Drupal\mirador\SharedCanvasManifest;
 use Drupal\mirador\Canvas;
-use Symfony\Component\HttpFoundation\Response;
-use Drupal\Component\Serialization\Json;
-use Drupal\image\Entity\ImageStyle;
-use Drupal\Core\Form\ConfigFormBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Controller routines for page example routes.
+ * Controller routines for manifest creation.
  */
 class MiradorManifestController extends ControllerBase {
 
   /**
    * Page callback: Returns manifest json.
    */
-  public function getManifest($entityType, $fieldName, $entityId, $settings) {
+  public function getManifest($entity_type, $field_name, $entity_id, $settings) {
     // Set a default value for width and height, if none specified by the user.
     $width = $height = 4217;
-    $author = $rights = $attributes = $date = NULL;
+    $rights = $attributes = $date = $license = NULL;
     $metadata = array();
 
     // Fetch the IIIF image server location from settings.
     $config = \Drupal::config('mirador.settings');
-    $iiifImageServerLocation = $config->get('iiif_server');
+    $iiif_image_server_location = $config->get('iiif_server');
     // @to-do: Display a message if no server specified.
 
     // Unserialize the settings to get the settings array.
     $settings = unserialize($settings);
 
     // Load the entity.
-    $entity = entity_load($entityType, $entityId);
+    $entity = entity_load($entity_type, $entity_id);
 
     // Set a default label and description, if none specified by the user.
     $label = $description = $entity->get('title')->getValue();
 
     // Get the image field value.
-    $image = $entity->get($fieldName)->getValue();
+    $image = $entity->get($field_name)->getValue();
     // Load the image and take file uri.
     $fid = $image[0]['target_id'];
     $file = file_load($fid);
 
     // Get the file mimetype.
-    $mimeType = $file->get('filemime')->getValue();
-    $mimetype = $mimeType[0]['value'];
+    $mime_type = $file->get('filemime')->getValue();
+    $mime_type = $mime_type[0]['value'];
 
     $uri = $file->getFileUri();
     // Exploding the image URI, as the public location
     // will be specified in IIF Server.
-    $imagePath = explode("public://", $uri);
+    $image_path = explode("public://", $uri);
 
     // Fetch the label, if specified.
     if (!empty($settings['label'])) {
@@ -88,7 +80,7 @@ class MiradorManifestController extends ControllerBase {
     // Fetch the rights value, if specified.
     if (!empty($settings['license'])) {
       $license = $entity->get($settings['license'])->getValue();
-      $license = $rights[0]['license'];
+      $license = $license[0]['license'];
       unset($settings['license']);
     }
     // Fetch the $attributes value, if specified.
@@ -112,7 +104,7 @@ class MiradorManifestController extends ControllerBase {
       );
     }
     // Create the resource URL.
-    $resource_url = $iiifImageServerLocation . $imagePath[1];
+    $resource_url = $iiif_image_server_location . $image_path[1];
 
     // Set the resource url as canvas and manifest ID.
     $id = $canvas_id = $resource_url;
@@ -122,11 +114,11 @@ class MiradorManifestController extends ControllerBase {
 
     // Create canvas.
     $canvas = new Canvas($canvas_id, $label);
-    $canvas->setImage($resource_url, $resource_url, $resource_url, $mimetype, $width, $height);
+    $canvas->setImage($resource_url, $resource_url, $resource_url, $mime_type, $width, $height);
     $manifest->addCanvas($canvas);
 
     $sc_manifest = $manifest->getManifest();
-    return new JsonResponse( $sc_manifest );
+    return new JsonResponse($sc_manifest);
   }
-}
 
+}

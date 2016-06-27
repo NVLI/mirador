@@ -45,7 +45,7 @@ function mirador_requirements($phase) {
           'severity' => REQUIREMENT_ERROR,
           'description' => t('You need to download a later version of the <a href=":mirador_link">Mirador plugin</a> and replace the old version located in the %path directory on your server.', array(
             ':mirador_link' => $library['download url'],
-            '%path' => $library['library path']
+            '%path' => $library['library path'],
           )),
         );
       }

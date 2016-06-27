@@ -1,29 +1,26 @@
 <?php
 /**
  * @file
- * Contains Mirador canvas creator.
+ * Contains Mirador manifest creator.
  */
 
 namespace Drupal\mirador;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
+/**
+ * Creates mirador manifest json.
+ */
 class SharedCanvasManifest {
   protected $id = '';
-  protected $object_label = '';
-  protected $metadata_uri = '';
+  protected $objectLabel = '';
+  protected $metadataUri = '';
   protected $canvases = array();
 
   /**
-   * Initiate the manifest
-   *
-   * @param unknown $metadata_uri
-   * @param string $object_label
+   * Initiate the manifest.
    */
   function __construct($id, $label, $description, $attributes, $license, $logo, $metadata) {
     $this->id = $id;
-    $this->object_label = $label;
+    $this->objectLabel = $label;
     $this->description = $description;
     $this->attributes = $attributes;
     $this->license = $license;
@@ -32,39 +29,38 @@ class SharedCanvasManifest {
   }
 
   /**
-   * Add a $canvas to $sequences
-   *
-   * @param string $canvas
+   * Add a $canvas to $sequences.
    */
-  function addCanvas($canvas = null) {
-    if ($canvas != null) {
-      $this->canvases [] = $canvas->toArray();
+  function addCanvas($canvas = NULL) {
+    if ($canvas != NULL) {
+      $this->canvases[] = $canvas->toArray();
     }
   }
 
   /**
-   * Build and return a json string based on what we have in the class
+   * Build and return a json string based on what we have in the class.
    */
   function getManifest() {
-    $scManifest = array (
+    $sc_manifest = array(
       '@context' => 'http://iiif.io/api/presentation/2/context.json',
       '@id' => $this->id,
       '@type' => 'sc:Manifest',
-      'label' => $this->object_label,
+      'label' => $this->objectLabel,
       'description' => $this->description,
       'attribution' => $this->attributes,
       'licence' => $this->license,
       'logo' => $this->logo,
       'metadata' => $this->metadata,
-      'sequences' => array( // an array but will always be a single object in our application
+      'sequences' => array(
         array(
           '@type' => 'sc:Sequence',
           'id' => $this->id,
           'label' => $this->object_label . ', in order',
-          'canvases' => $this->canvases
-        )
-      )
+          'canvases' => $this->canvases,
+        ),
+      ),
     );
-    return $scManifest;
+    return $sc_manifest;
   }
+
 }
