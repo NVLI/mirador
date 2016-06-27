@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Helper js to load the mirador viewer.
+ */
+
 (function ($, Drupal) {
 
   Drupal.behaviors.Mirador = {

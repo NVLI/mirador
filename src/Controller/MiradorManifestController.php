@@ -30,7 +30,6 @@ class MiradorManifestController extends ControllerBase {
     $config = \Drupal::config('mirador.settings');
     $iiif_image_server_location = $config->get('iiif_server');
     // @to-do: Display a message if no server specified.
-
     // Unserialize the settings to get the settings array.
     $settings = unserialize($settings);
 
