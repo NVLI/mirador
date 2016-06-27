@@ -38,22 +38,32 @@ class MiradorManifestController extends ControllerBase {
 
     // Set a default label and description, if none specified by the user.
     $label = $description = $entity->get('title')->getValue();
+    // If simple resolver the image path, the field_name passed will be the
+    // image field, which contains the image to be viewed in mirador.
+    if ($settings['resolver_type'] == 'simple-resolver') {
+      // Get the image field value.
+      $image = $entity->get($field_name)->getValue();
+      // Load the image and take file uri.
+      $fid = $image[0]['target_id'];
+      $file = file_load($fid);
 
-    // Get the image field value.
-    $image = $entity->get($field_name)->getValue();
-    // Load the image and take file uri.
-    $fid = $image[0]['target_id'];
-    $file = file_load($fid);
+      // Get the file mimetype.
+      $mime_type = $file->get('filemime')->getValue();
+      $mime_type = $mime_type[0]['value'];
 
-    // Get the file mimetype.
-    $mime_type = $file->get('filemime')->getValue();
-    $mime_type = $mime_type[0]['value'];
-
-    $uri = $file->getFileUri();
-    // Exploding the image URI, as the public location
-    // will be specified in IIF Server.
-    $image_path = explode("public://", $uri);
-
+      $uri = $file->getFileUri();
+      // Exploding the image URI, as the public location
+      // will be specified in IIF Server.
+      $image_path = explode("public://", $uri);
+      $image_path = $image_path[1];
+    }
+    // If resolver type is simple-resolver-identifier, the value in field_name
+    // will be the identifier of the image to be viewed in mirador.
+    elseif($settings['resolver_type'] == 'simple-resolver-identifier') {
+      $image_path = $entity->get($field_name)->getValue();
+      $image_path = $image_path[0]['value'];
+    }
+    unset($settings['resolver_type']);
     // Fetch the label, if specified.
     if (!empty($settings['label'])) {
       $label = $entity->get($settings['label'])->getValue();
@@ -103,7 +113,7 @@ class MiradorManifestController extends ControllerBase {
       );
     }
     // Create the resource URL.
-    $resource_url = $iiif_image_server_location . $image_path[1];
+    $resource_url = $iiif_image_server_location . $image_path;
 
     // Set the resource url as canvas and manifest ID.
     $id = $canvas_id = $resource_url;
