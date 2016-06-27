@@ -23,7 +23,7 @@ class MiradorManifestController extends ControllerBase {
   public function getManifest($entity_type, $field_name, $entity_id, $settings) {
     // Set a default value for width and height, if none specified by the user.
     $width = $height = 4217;
-    $rights = $attributes = $date = $license = NULL;
+    $attributes = $license = $logo = NULL;
     $metadata = array();
 
     // Fetch the IIIF image server location from settings.

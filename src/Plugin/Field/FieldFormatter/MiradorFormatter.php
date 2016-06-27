@@ -167,7 +167,6 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
       $image_style = $this->imageStyleStorage->load($settings['mirador_node_style']);
       $cache_tags = $image_style->getCacheTags();
     }
-    $cache_tags_first = array();
 
     foreach ($files as $delta => $file) {
       // Check if first image should have separate image style.
