@@ -10,13 +10,14 @@ namespace Drupal\mirador;
  * Creates canvas for mirador.
  */
 class Canvas {
+
   protected $objectId;
   protected $objectLabel;
 
   /**
    * Initiate the canvas.
    */
-  function __construct($id, $label) {
+  public function __construct($id, $label) {
     $this->objectId = $id;
     $this->objectLabel = $label;
   }
@@ -24,7 +25,7 @@ class Canvas {
   /**
    * Add image to canvas.
    */
-  function setImage($thumbnail_uri, $image_uri, $resource_uri, $format, $width, $height) {
+  public function setImage($thumbnail_uri, $image_uri, $resource_uri, $format, $width, $height) {
     $this->thumbnail_uri = $thumbnail_uri;
     $this->imageUri = $image_uri;
     $this->resource_uri = $resource_uri;
@@ -36,7 +37,7 @@ class Canvas {
   /**
    * Creates the manifest canvas array.
    */
-  function toArray() {
+  public function toArray() {
     $manifest_canvas = array(
       '@type' => 'sc:Canvas',
       '@id' => $this->objectId,

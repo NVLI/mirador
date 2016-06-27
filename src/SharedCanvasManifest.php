@@ -18,7 +18,7 @@ class SharedCanvasManifest {
   /**
    * Initiate the manifest.
    */
-  function __construct($id, $label, $description, $attributes, $license, $logo, $metadata) {
+  public function __construct($id, $label, $description, $attributes, $license, $logo, $metadata) {
     $this->id = $id;
     $this->objectLabel = $label;
     $this->description = $description;
@@ -31,7 +31,7 @@ class SharedCanvasManifest {
   /**
    * Add a $canvas to $sequences.
    */
-  function addCanvas($canvas = NULL) {
+  public function addCanvas($canvas = NULL) {
     if ($canvas != NULL) {
       $this->canvases[] = $canvas->toArray();
     }
@@ -40,7 +40,7 @@ class SharedCanvasManifest {
   /**
    * Build and return a json string based on what we have in the class.
    */
-  function getManifest() {
+  public function getManifest() {
     $sc_manifest = array(
       '@context' => 'http://iiif.io/api/presentation/2/context.json',
       '@id' => $this->id,
