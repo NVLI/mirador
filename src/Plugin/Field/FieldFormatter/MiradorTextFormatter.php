@@ -23,7 +23,7 @@ use Drupal\Core\Field\FormatterBase;
  * Plugin implementation of the 'mirador' formatter.
  *
  * @FieldFormatter(
- *   id = "text_mirador",
+ *   id = "mirador_text",
  *   module = "mirador",
  *   label = @Translation("Mirador"),
  *   field_types = {
@@ -34,7 +34,7 @@ use Drupal\Core\Field\FormatterBase;
  *   }
  * )
  */
-class TextMiradorFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
+class MiradorTextFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
 
   /**
    * Constructs an TextFormatter object.

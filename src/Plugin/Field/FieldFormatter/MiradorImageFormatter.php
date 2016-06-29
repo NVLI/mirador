@@ -22,7 +22,7 @@ use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatterBase;
  * Plugin implementation of the 'mirador' formatter.
  *
  * @FieldFormatter(
- *   id = "mirador",
+ *   id = "mirador_image",
  *   module = "mirador",
  *   label = @Translation("Mirador"),
  *   field_types = {
@@ -30,7 +30,7 @@ use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatterBase;
  *   }
  * )
  */
-class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPluginInterface {
+class MiradorImageFormatter extends ImageFormatterBase implements ContainerFactoryPluginInterface {
   /**
    * The image style entity storage.
    *
