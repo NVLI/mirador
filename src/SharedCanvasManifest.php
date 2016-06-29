@@ -55,7 +55,7 @@ class SharedCanvasManifest {
         array(
           '@type' => 'sc:Sequence',
           'id' => $this->id,
-          'label' => $this->object_label . ', in order',
+          'label' => $this->objectLabel,
           'canvases' => $this->canvases,
         ),
       ),

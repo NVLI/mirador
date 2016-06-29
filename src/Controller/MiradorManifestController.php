@@ -23,6 +23,7 @@ class MiradorManifestController extends ControllerBase {
   public function getManifest($entity_type, $field_name, $entity_id, $settings) {
     // Set a default value for width and height, if none specified by the user.
     $width = $height = 4217;
+    $mime_type = "image/jpg";
     $attributes = $license = $logo = NULL;
     $metadata = array();
 
@@ -104,13 +105,15 @@ class MiradorManifestController extends ControllerBase {
       $logo = $logo[0]['value'];
       unset($settings['logo']);
     }
-    // Loop through the settings to generate metadata.
-    foreach ($settings as $key => $setting) {
-      $value = $entity->get($setting)->getValue();
-      $metadata[] = array(
-        'label' => $key,
-        'value' => $value[0]['value'],
-      );
+    if (!empty($settings)) {
+      // Loop through the settings to generate metadata.
+      foreach ($settings as $key => $setting) {
+        $value = $entity->get($setting)->getValue();
+        $metadata[] = array(
+          'label' => $key,
+          'value' => $value[0]['value'],
+        );
+      }
     }
     // Create the resource URL.
     $resource_url = $iiif_image_server_location . $image_path;
