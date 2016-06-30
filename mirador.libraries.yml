@@ -16,6 +16,7 @@ init:
   version: VERSION
   js:
     js/mirador-load.js: {}
+    js/miradorEndPoint.js: {}
   css:
     theme:
       css/mirador.css: {}

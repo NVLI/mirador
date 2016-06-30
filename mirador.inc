@@ -9,6 +9,7 @@ use Drupal\Core\Template\Attribute;
 use Drupal\Component\Utility\Unicode;
 use Drupal\image\Entity\ImageStyle;
 use Symfony\Component\Yaml\Parser;
+use \Drupal\user\Entity\User;
 
 /**
  * Prepares variables for mirador formatter templates.
@@ -25,6 +26,7 @@ use Symfony\Component\Yaml\Parser;
  */
 function template_preprocess_mirador_formatter(&$variables) {
   global $base_url;
+  $uid = \Drupal::currentUser()->id();
   $item = $variables['item'];
   $item_attributes = isset($variables['item_attributes']) ? $variables['item_attributes'] : array();
   $entity = $variables['entity'];
@@ -51,8 +53,13 @@ function template_preprocess_mirador_formatter(&$variables) {
 
   // Generate manifest uri and pass to jquery.
   $manifest_uri = $base_url . '/mirador/manifest/' . $entity_type_id . '/' . $field_name . '/' . $id . '/' . $mirador_settings;
+  // Generate annotation uri.
+  $annotation_uri = $base_url . '/mirador/annotation';
   $variables['#attached']['drupalSettings']['init']['entity']['manifest_uri'] = $manifest_uri;
   $variables['#attached']['drupalSettings']['init']['entity']['viewer_id'] = $mirador_viewer_id;
+  $variables['#attached']['drupalSettings']['init']['entity']['entity_id'] = $id;
+  $variables['#attached']['drupalSettings']['init']['entity']['user_id'] = $uid;
+  $variables['#attached']['drupalSettings']['init']['entity']['annotation_uri'] = $annotation_uri;
 
   $variables['attributes'] = new Attribute();
   $variables['attributes']['class'] = $classes_array;
