@@ -24,6 +24,7 @@ use Symfony\Component\Yaml\Parser;
  *   - settings: Formatter settings array.
  */
 function template_preprocess_mirador_formatter(&$variables) {
+
   $caption = NULL;
   global $base_url;
 

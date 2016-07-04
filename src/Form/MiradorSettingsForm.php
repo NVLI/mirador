@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @file
- * Administrative class form for the mirador module.
- *
- * Contains \Drupal\mirador\Form\MiradorSettingsForm.
- */
-
 namespace Drupal\mirador\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -21,6 +14,7 @@ class MiradorSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
+
     return 'mirador_admin_settings_form';
   }
 
@@ -28,6 +22,7 @@ class MiradorSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
+
     return ['mirador.settings'];
   }
 
@@ -35,6 +30,7 @@ class MiradorSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+
     $config = $this->config('mirador.settings');
     $form['iiif_server'] = array(
       '#type' => 'textfield',
@@ -50,9 +46,10 @@ class MiradorSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+
     $this->config('mirador.settings')
-      ->set('iiif_server', $form_state->getValue('iiif_server'))
-      ->save();
+            ->set('iiif_server', $form_state->getValue('iiif_server'))
+            ->save();
 
     parent::submitForm($form, $form_state);
   }
@@ -61,6 +58,7 @@ class MiradorSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+
   }
 
 }

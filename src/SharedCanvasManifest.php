@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains Mirador manifest creator.
- */
 
 namespace Drupal\mirador;
 
@@ -19,6 +15,7 @@ class SharedCanvasManifest {
    * Initiate the manifest.
    */
   public function __construct($id, $label, $description, $attributes, $license, $logo, $metadata) {
+
     $this->id = $id;
     $this->objectLabel = $label;
     $this->description = $description;
@@ -32,6 +29,7 @@ class SharedCanvasManifest {
    * Add a $canvas to $sequences.
    */
   public function addCanvas($canvas = NULL) {
+
     if ($canvas != NULL) {
       $this->canvases[] = $canvas->toArray();
     }
@@ -41,6 +39,7 @@ class SharedCanvasManifest {
    * Build and return a json string based on what we have in the class.
    */
   public function getManifest() {
+
     $sc_manifest = array(
       '@context' => 'http://iiif.io/api/presentation/2/context.json',
       '@id' => $this->id,
@@ -52,12 +51,12 @@ class SharedCanvasManifest {
       'logo' => $this->logo,
       'metadata' => $this->metadata,
       'sequences' => array(
-        array(
-          '@type' => 'sc:Sequence',
-          'id' => $this->id,
-          'label' => $this->object_label . ', in order',
-          'canvases' => $this->canvases,
-        ),
+      array(
+        '@type' => 'sc:Sequence',
+        'id' => $this->id,
+        'label' => $this->object_label . ', in order',
+        'canvases' => $this->canvases,
+      ),
       ),
     );
     return $sc_manifest;

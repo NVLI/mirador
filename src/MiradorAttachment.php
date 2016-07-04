@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\mirador\PageAttachmentInterface.
- */
-
 namespace Drupal\mirador;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -39,6 +34,7 @@ class MiradorAttachment implements ElementAttachmentInterface {
    * Create an instance of MiradorAttachment.
    */
   public function __construct(ActivationCheckInterface $activation, ModuleHandlerInterface $module_handler, ConfigFactoryInterface $config) {
+
     $this->activation = $activation;
     $this->moduleHandler = $module_handler;
     $this->settings = $config->get('mirador.settings');
@@ -48,6 +44,7 @@ class MiradorAttachment implements ElementAttachmentInterface {
    * {@inheritdoc}
    */
   public function isApplicable() {
+
     return !drupal_installation_attempted() && $this->activation->isActive();
   }
 
@@ -55,6 +52,7 @@ class MiradorAttachment implements ElementAttachmentInterface {
    * {@inheritdoc}
    */
   public function attach(array &$page) {
+
     $page['#attached']['library'][] = 'mirador/mirador';
     $page['#attached']['library'][] = 'mirador/init';
   }

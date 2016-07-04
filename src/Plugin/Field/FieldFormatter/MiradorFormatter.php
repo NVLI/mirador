@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\mirador\Plugin\Field\FieldFormatter\MiradorFormatter.
- */
-
 namespace Drupal\mirador\Plugin\Field\FieldFormatter;
 
 use Drupal\mirador\ElementAttachmentInterface;
@@ -16,7 +11,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatterBase;
-
 
 /**
  * Plugin implementation of the 'mirador' formatter.
@@ -59,6 +53,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
    *   Allow the library to be attached to the page.
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, EntityStorageInterface $image_style_storage, ElementAttachmentInterface $attachment) {
+
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
     $this->imageStyleStorage = $image_style_storage;
     $this->attachment = $attachment;
@@ -68,6 +63,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+
     return new static(
       $plugin_id,
       $plugin_definition,
@@ -78,13 +74,14 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
       $configuration['third_party_settings'],
       $container->get('entity.manager')->getStorage('image_style'),
       $container->get('mirador.attachment')
-    );
+      );
   }
 
   /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
+
     return array(
       'mirador_node_style' => '',
       'mirador_settings' => '',
@@ -95,6 +92,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
+
     $image_styles = image_style_options(FALSE);
     $image_styles_hide = $image_styles;
     $image_styles_hide['hide'] = t('Hide (do not display image)');
@@ -111,14 +109,16 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
       '#title' => t('Mirador Settings'),
       '#type' => 'textarea',
       '#default_value' => $this->getSetting('mirador_settings'),
-      '#description' => t('Please enter the mirador settings in YAML Format, ie key: field_machine_name.
+      '#description' => t(
+          'Please enter the mirador settings in YAML Format, ie key: field_machine_name.
         allowed key values are: label, description, width, height, attribution, author, rights.
         <br>
         Eg: <pre>
           label: title
           description: body
           attribution: title
-         </pre>'),
+         </pre>'
+      ),
     );
     return $element;
   }
@@ -127,6 +127,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public function settingsSummary() {
+
     $summary = array();
     $image_styles = image_style_options(FALSE);
     // Unset possible 'No defined styles' option.
@@ -153,6 +154,7 @@ class MiradorFormatter extends ImageFormatterBase implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
+
     $elements = array();
     $settings = $this->getSettings();
     $files = $this->getEntitiesToView($items, $langcode);
