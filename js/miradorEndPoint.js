@@ -23,7 +23,8 @@
 (function($){
 
   $.MiradorEndpoint = function(options) {
-
+    // If user does not have permission to annotate, display a message instead
+      // of add annotation link.
     jQuery.extend(this, {
       token:     null,
       // prefix:    'annotation', /**/
@@ -31,6 +32,8 @@
       url:      options.url,
       imageRefEntity: options.imageRefEntityID,
       annotationOwner: options.annotationOwner,
+      annotationSettings: options.annotationSettings,
+      xcrfToken: options.xcrfToken,
       dfd:       null,
       annotationsList: [],        //OA list for Mirador use
       idMapper: {} // internal list for module use to map id to URI
@@ -60,17 +63,18 @@
     //Search endpoint for all annotations with a given URI
     search: function(options, successCallback, errorCallback) {
       var _this = this;
-
+      annotationSettings = jQuery.parseJSON(_this.annotationSettings);
       this.annotationsList = []; //clear out current list
       jQuery.ajax({
-        url: _this.url + "/search", // this.prefix+
-        type: 'GET',
+        url: annotationSettings.annotation_search_uri, // this.prefix+
+        type: annotationSettings.annotation_search_method,
         dataType: 'json',
         headers: {
           //"x-annotator-auth-token": this.token
         },
         data: {
-          uri: options.uri,
+          uri: annotationSettings.annotation_search_uri,
+          imageRefEntityID: options.imageRefEntityID,
           media: "image",
           limit: 10000
         },
@@ -79,7 +83,8 @@
         success: function(data) {
           if (typeof successCallback === "function") {
             successCallback(data);
-          } else {
+          }
+          else {
             _this.annotationsList = data; // gmr
             jQuery.each(_this.annotationsList, function(index, value) {
               value.fullId = value["@id"];
@@ -97,23 +102,24 @@
             console.log("The request for annotations has caused an error for endpoint: "+ options.uri);
           }
         }
-
       });
     },
 
     deleteAnnotation: function(annotationID, returnSuccess, returnError) {
       var _this = this;
+      annotationSettings = jQuery.parseJSON(_this.annotationSettings);
+      var xcrfToken = _this.xcrfToken;
+      var drupal_annotation_id = this.idMapper[annotationID];
+      var annotationDeleteUri = annotationSettings.annotation_delete_uri;
+      annotationDeleteUri = annotationDeleteUri.replace("{annotation_id}", drupal_annotation_id);
       jQuery.ajax({
-        url: _this.url + "/destroy?uri=" + _this.idMapper[annotationID], // this.prefix+
-        type: 'DELETE',
-        dataType: 'json',
+        url: annotationDeleteUri,
+        type: annotationSettings.annotation_delete_method,
         headers: {
-          //"x-annotator-auth-token": this.token
+          "Content-Type": 'application/hal+json',
+          "X-CSRF-Token": xcrfToken,
         },
-        data: {
-          uri: annotationID,
-        },
-        contentType: "application/json; charset=utf-8",
+        contentType: "*",
         success: function(data) {
           returnSuccess();
         },
@@ -130,18 +136,29 @@
       // slashes don't work in JQuery.find which is used for delete
       // so need to switch http:// id to full id and back again for delete.
       shortId = annotation["@id"];
+      var xcrfToken = _this.xcrfToken;
       annotation["@id"] = annotation.fullId;
-      annotationID = annotation.fullId;//annotation["@id"];
-      delete annotation.fullId;
-      delete annotation.endpoint;
+      annotationID = annotation.fullId; //annotation["@id"];
+      annotationSettings = jQuery.parseJSON(_this.annotationSettings);
+      var annotationUpdateUri = annotationSettings.annotation_update_uri;
+      annotationUpdateUri = annotationUpdateUri.replace("{annotation_id}", annotationID);
+
+      // Generate annotation data to be stored as Drupal entity.
+       var drupalAnnotationStore = {};
+      drupalAnnotationStore['_links'] = {};
+      drupalAnnotationStore['_links']['type'] = {};
+      drupalAnnotationStore['_links']['type']['href'] = annotationSettings.type_url;
+      drupalAnnotationStore[annotationSettings.annotation_text] = {};
+      drupalAnnotationStore[annotationSettings.annotation_text]['value'] = annotation['resource']['0']['chars'];
       jQuery.ajax({
-        url: _this.url + "/update/"+annotationID, //this.prefix+
-        type: 'POST',
+        url: annotationUpdateUri, //this.prefix+
+        type: annotationSettings.annotation_update_method,
         dataType: 'json',
         headers: {
-          //"x-annotator-auth-token": this.token
+          "Content-Type": 'application/hal+json',
+          "X-CSRF-Token": xcrfToken,
         },
-        data: JSON.stringify(annotation),
+        data: JSON.stringify(drupalAnnotationStore),
         contentType: "application/json; charset=utf-8",
         success: function(data) {
           /* this returned data doesn't seem to be used anywhere */
@@ -160,23 +177,49 @@
     create: function(oaAnnotation, returnSuccess, returnError) {
       var annotation = oaAnnotation,
           _this = this;
+      var xcrfToken = _this.xcrfToken;
       annotation['imgRefEntity'] = _this.imageRefEntityID;
       annotation['annotationOwner'] = this.annotationOwner;
+      annotationSettings = jQuery.parseJSON(_this.annotationSettings);
+      // Generate annotation data to be stored as Drupal entity.
+      var drupalAnnotationStore = {};
+      drupalAnnotationStore['_links'] = {};
+      drupalAnnotationStore['_links']['type'] = {};
+      drupalAnnotationStore['_links']['type']['href'] = annotationSettings.type_url;
+      if (annotationSettings.annotation_text != "title") {
+        drupalAnnotationStore['title'] = {};
+        drupalAnnotationStore['title']['value'] = annotation['resource']['0']['chars'];
+      }
+      drupalAnnotationStore[annotationSettings.annotation_text] = {};
+      drupalAnnotationStore[annotationSettings.annotation_text]['value'] = annotation['resource']['0']['chars'];
+      drupalAnnotationStore[annotationSettings.annotation_image_entity] = {};
+      drupalAnnotationStore[annotationSettings.annotation_image_entity]['und'] = {};
+      drupalAnnotationStore[annotationSettings.annotation_image_entity]['und']['target_id'] = annotation['imgRefEntity'];
+      drupalAnnotationStore[annotationSettings.annotation_viewport] = {};
+      drupalAnnotationStore[annotationSettings.annotation_viewport]['value'] = annotation['on']['selector']['value'];
+      drupalAnnotationStore[annotationSettings.annotation_resource] = {};
+      drupalAnnotationStore[annotationSettings.annotation_resource]['value'] = annotation['on']['source'];
+      drupalAnnotationStore['type'] = {};
+      drupalAnnotationStore['type']['target_id'] = annotationSettings.annotation_entity_bundle;
       jQuery.ajax({
-        url: _this.url + "/create", //this.prefix+
-        type: 'POST',
+        url: annotationSettings.annotation_create_uri,
+        type: annotationSettings.annotation_create_method,
         dataType: 'json',
         headers: {
-          //"x-annotator-auth-token": this.token
+          "Content-Type": 'application/hal+json',
+          "X-CSRF-Token": xcrfToken,
         },
-        data: JSON.stringify(annotation),
+        data: JSON.stringify(drupalAnnotationStore),
         contentType: "application/json; charset=utf-8",
-        success: function(data) {
-          data.fullId = data["@id"];
+        success: function(result, status, xhr) {
+          annotation['id'] = result;
+          annotation['@id'] = result;
+          annotation['fullId'] = result;
+          data = JSON.stringify(annotation);
+          data.fullId = result;
           data["@id"] = $.genUUID();
           data.endpoint = _this;
-          _this.idMapper[data["@id"]] = data.fullId;
-
+          _this.idMapper[data["@id"]] = result;
           returnSuccess(data);
         },
         error: function() {
