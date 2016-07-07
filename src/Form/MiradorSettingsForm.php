@@ -195,10 +195,10 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#size' => 30,
       '#description' => t('The annotation update endpoint'),
     );
-    $form['annotation_settings']['annotation_endpoints']['create']['annotation_update_method'] = array(
+    $form['annotation_settings']['annotation_endpoints']['update']['annotation_update_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation update method'),
-       '#options' => array('GET' => t('GET')),
+       '#options' => array('PATCH' => t('PATCH'), 'GET' => t('GET')),
       '#default_value' => $config->get('annotation_update_method'),
       '#description' => t('The http method used for annotation updation'),
     );
