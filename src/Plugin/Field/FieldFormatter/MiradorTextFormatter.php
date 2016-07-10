@@ -8,14 +8,11 @@
 namespace Drupal\mirador\Plugin\Field\FieldFormatter;
 
 use Drupal\mirador\ElementAttachmentInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Cache\Cache;
-use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatterBase;
 use Drupal\Core\Field\FormatterBase;
 
 

@@ -60,7 +60,7 @@ class MiradorManifestController extends ControllerBase {
     }
     // If resolver type is simple-resolver-identifier, the value in field_name
     // will be the identifier of the image to be viewed in mirador.
-    elseif($settings['resolver_type'] == 'simple-resolver-identifier') {
+    elseif ($settings['resolver_type'] == 'simple-resolver-identifier') {
       $image_path = $entity->get($field_name)->getValue();
       $image_path = $image_path[0]['value'];
     }

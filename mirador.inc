@@ -6,12 +6,7 @@
  */
 
 use Drupal\Core\Template\Attribute;
-use Drupal\Component\Utility\Unicode;
-use Drupal\image\Entity\ImageStyle;
 use Symfony\Component\Yaml\Parser;
-use \Drupal\user\Entity\User;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use \Drupal\rest\RequestHandler;
 
 /**
  * Prepares variables for mirador formatter templates.
@@ -33,7 +28,6 @@ function template_preprocess_mirador_formatter(&$variables) {
   $user = \Drupal::currentUser();
   $uid = \Drupal::currentUser()->id();
   $item = $variables['item'];
-  $item_attributes = isset($variables['item_attributes']) ? $variables['item_attributes'] : array();
   $entity = $variables['entity'];
   $settings = $variables['settings'];
   // Load the mirador global settings.
@@ -86,13 +80,11 @@ function template_preprocess_mirador_formatter(&$variables) {
   $annotation_settings['annotation_delete_method'] = $config->get('annotation_delete_method');
   $annotation_settings['type_url'] = $base_url . '/rest/type/' . $config->get('annotation_entity') . '/' . $config->get('annotation_bundle');
 
-  if (\Drupal::moduleHandler()->moduleExists('rest')) {
-    $annotation_settings['rest_enabled'] = TRUE;
-    $annotation_settings['token_url'] = $base_url . '/rest/session/token';
-  }
-  else {
-    $annotation_settings['rest_enabled'] = $annotation_settings['token_url'] = FALSE;
-  }
+  // If rest endpoint is enabled, then use the rest
+  // token for user authentication.
+  $annotation_settings['rest_enabled'] = TRUE;
+  $annotation_settings['token_url'] = $base_url . '/rest/session/token';
+
   if ($user->hasPermission('perform image annotations')) {
     $perform_annotation = TRUE;
   }

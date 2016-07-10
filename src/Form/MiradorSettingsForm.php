@@ -65,7 +65,7 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#title' => t('Annotation Settings'),
       '#open' => FALSE,
       '#prefix' => '<div class = "test">',
-      '#suffix' => '</div>'
+      '#suffix' => '</div>',
     );
     $form['annotation_settings']['annotation_entity'] = array(
       '#type' => 'textfield',
@@ -156,7 +156,7 @@ class MiradorSettingsForm extends ConfigFormBase {
     $form['annotation_settings']['annotation_endpoints']['create']['annotation_create_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation create method'),
-       '#options' => array('POST' => t('POST'), 'GET' => t('GET')),
+      '#options' => array('POST' => t('POST'), 'GET' => t('GET')),
       '#default_value' => $config->get('annotation_create_method'),
       '#description' => t('The http method used for annotation creation'),
     );
@@ -172,12 +172,12 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#title' => t('Annotation search endpoint'),
       '#default_value' => $config->get('annotation_search'),
       '#size' => 30,
-      '#description' => t('The annotation search endpoint'),
+      '#description' => t('The annotation search endpoint. please use token {image_entity_id} for referring image entity.'),
     );
     $form['annotation_settings']['annotation_endpoints']['search']['annotation_search_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation search method'),
-       '#options' => array('GET' => t('GET')),
+      '#options' => array('GET' => t('GET')),
       '#default_value' => $config->get('annotation_create_method'),
       '#description' => t('The http method used for annotation creation'),
     );
@@ -193,12 +193,12 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#title' => t('Annotation update endpoint'),
       '#default_value' => $config->get('annotation_update'),
       '#size' => 30,
-      '#description' => t('The annotation update endpoint'),
+      '#description' => t('The annotation update endpoint. please use token {annotation_id} for annotation entity'),
     );
     $form['annotation_settings']['annotation_endpoints']['update']['annotation_update_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation update method'),
-       '#options' => array('PATCH' => t('PATCH'), 'GET' => t('GET')),
+      '#options' => array('PATCH' => t('PATCH'), 'GET' => t('GET')),
       '#default_value' => $config->get('annotation_update_method'),
       '#description' => t('The http method used for annotation updation'),
     );
@@ -214,12 +214,12 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#title' => t('Annotation delete endpoint'),
       '#default_value' => $config->get('annotation_delete'),
       '#size' => 30,
-      '#description' => t('The annotation delete endpoint'),
+      '#description' => t('The annotation delete endpoint. please use token {annotation_id} for annotation entity'),
     );
     $form['annotation_settings']['annotation_endpoints']['delete']['annotation_delete_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation delete method'),
-       '#options' => array('DELETE' => t('DELETE')),
+      '#options' => array('DELETE' => t('DELETE')),
       '#default_value' => $config->get('annotation_delete_method'),
       '#description' => t('The http method used for annotation deletion'),
     );
@@ -307,8 +307,8 @@ class MiradorSettingsForm extends ConfigFormBase {
       $config->set('annotation_delete_method', 'DELETE');
     }
     $config->save();
-
     parent::submitForm($form, $form_state);
+
   }
 
   /**
@@ -316,4 +316,5 @@ class MiradorSettingsForm extends ConfigFormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
   }
+
 }

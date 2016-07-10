@@ -8,8 +8,6 @@
 namespace Drupal\mirador\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\mirador\SharedCanvasManifest;
-use Drupal\mirador\Canvas;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -30,11 +28,11 @@ class MiradorAnnotationController extends ControllerBase {
    * Returns the annotations list.
    */
   public function getAnnotation($image_id) {
+    $annotations = array();
     // Load the mirador global settings.
     $config = \Drupal::config('mirador.settings');
     // Annotation settings.
     $annotation_entity = $config->get('annotation_entity');
-    $annotation_bundle  = $config->get('annotation_bundle');
     $annotation_text = $config->get('annotation_text');
     $annotation_viewport = $config->get('annotation_viewport');
     $annotation_image_entity = $config->get('annotation_image_entity');
@@ -66,7 +64,7 @@ class MiradorAnnotationController extends ControllerBase {
           '@type' => 'oa:FragmentSelector',
           'value' => $annotation->$annotation_viewport->value,
         ),
-         "full" => $annotation->$annotation_image_resource->value,
+        "full" => $annotation->$annotation_image_resource->value,
       );
       $annotations[] = array(
         '@id' => $annotation->nid->value,

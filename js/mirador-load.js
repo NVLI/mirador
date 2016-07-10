@@ -4,7 +4,7 @@
  */
 
 (function ($, Drupal) {
-Drupal.Mirador = Drupal.Mirador || {};
+  Drupal.Mirador = Drupal.Mirador || {};
   Drupal.behaviors.Mirador = {
     attach: function (context, settings) {
       var manifestUri = settings.init.entity.manifest_uri;
@@ -29,8 +29,7 @@ Drupal.Mirador = Drupal.Mirador || {};
           jQuery.ajax({
             url: tokenUrl,
             type: "GET",
-          })
-          .done(function(data) {
+          }).done(function(data) {
             xcrfToken = data;
             Mirador({
               "id": viewerID,
@@ -76,7 +75,6 @@ Drupal.Mirador = Drupal.Mirador || {};
                   "slotBelow": false,
                 }
               }],
-              /** Annotations **/
               annotationEndpoint: {
                 name: 'Mirador Endpoint',
                 module: 'MiradorEndpoint',
