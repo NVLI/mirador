@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Drupal\mirador\ActivationCheckInterface.
- */
-
 namespace Drupal\mirador;
 
 /**

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\mirdador\Controller\MiradorManifestController.
- */
-
 namespace Drupal\mirador\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -21,6 +16,7 @@ class MiradorManifestController extends ControllerBase {
    * Page callback: Returns manifest json.
    */
   public function getManifest($entity_type, $field_name, $entity_id, $settings) {
+
     // Set a default value for width and height, if none specified by the user.
     $width = $height = 4217;
     $mime_type = "image/jpg";
