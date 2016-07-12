@@ -119,7 +119,6 @@ class MiradorTextFormatter extends FormatterBase implements ContainerFactoryPlug
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = array();
     $settings = $this->getSettings();
-    $settings['resolver_type'] = 'simple-resolver-identifier';
     foreach ($items as $delta => $item) {
       $item_attributes = $item->_attributes;
       unset($item->_attributes);

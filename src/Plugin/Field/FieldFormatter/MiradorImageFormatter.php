@@ -178,11 +178,9 @@ class MiradorImageFormatter extends ImageFormatterBase implements ContainerFacto
       $item = $file->_referringItem;
       $item_attributes = $item->_attributes;
       unset($item->_attributes);
-      $settings['resolver_type'] = 'simple-resolver';
       $elements[$delta] = array(
         '#theme' => 'mirador_formatter',
         '#item' => $item,
-        '#resolver_type' => 'simple-resolver',
         '#item_attributes' => $item_attributes,
         '#entity' => $items->getEntity(),
         '#settings' => $settings,

@@ -49,7 +49,6 @@ function template_preprocess_mirador_formatter(&$variables) {
   // Parse the mirador settings YAML.
   $yaml = new Parser();
   $mirador_settings_array = $yaml->parse($settings['mirador_settings']);
-  $mirador_settings_array['resolver_type'] = $settings['resolver_type'];
   $mirador_settings = serialize($mirador_settings_array);
 
   // Generate manifest uri and pass to jquery.
