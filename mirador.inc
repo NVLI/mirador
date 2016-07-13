@@ -78,11 +78,13 @@ function template_preprocess_mirador_formatter(&$variables) {
   $annotation_settings['annotation_delete_uri'] = $config->get('annotation_delete');
   $annotation_settings['annotation_delete_method'] = $config->get('annotation_delete_method');
   $annotation_settings['type_url'] = $base_url . '/rest/type/' . $config->get('annotation_entity') . '/' . $config->get('annotation_bundle');
-
+  $annotation_settings['endpoint'] = $config->get('endpoint');
+  $annotation_settings['token_url'] = NULL;
   // If rest endpoint is enabled, then use the rest
   // token for user authentication.
-  $annotation_settings['rest_enabled'] = TRUE;
-  $annotation_settings['token_url'] = $base_url . '/rest/session/token';
+  if ($config->get('endpoint') == "rest_endpoint") {
+    $annotation_settings['token_url'] = $base_url . '/rest/session/token';
+  }
 
   if ($user->hasPermission('perform image annotations')) {
     $perform_annotation = TRUE;
@@ -92,6 +94,7 @@ function template_preprocess_mirador_formatter(&$variables) {
   $variables['#attached']['drupalSettings']['init']['token_url'] = $annotation_settings['token_url'];
   $variables['#attached']['drupalSettings']['init']['annotation_settings'] = json_encode($annotation_settings);
   $variables['#attached']['drupalSettings']['init']['perform_annotation'] = $perform_annotation;
+   $variables['#attached']['drupalSettings']['init']['endpoint'] = $config->get('endpoint');
 
   $variables['attributes'] = new Attribute();
   $variables['attributes']['class'] = $classes_array;

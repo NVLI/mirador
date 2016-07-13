@@ -137,14 +137,26 @@
       annotationSettings = jQuery.parseJSON(_this.annotationSettings);
       var annotationUpdateUri = annotationSettings.annotation_update_uri;
       annotationUpdateUri = annotationUpdateUri.replace("{annotation_id}", annotationID);
-
+      var drupalAnnotationStore = {};
       // Generate annotation data to be stored as Drupal entity.
-       var drupalAnnotationStore = {};
-      drupalAnnotationStore['_links'] = {};
-      drupalAnnotationStore['_links']['type'] = {};
-      drupalAnnotationStore['_links']['type']['href'] = annotationSettings.type_url;
-      drupalAnnotationStore[annotationSettings.annotation_text] = {};
-      drupalAnnotationStore[annotationSettings.annotation_text]['value'] = annotation['resource']['0']['chars'];
+      if (annotationSettings.endpoint == "rest_endpoint") {
+        drupalAnnotationStore['_links'] = {};
+        drupalAnnotationStore['_links']['type'] = {};
+        drupalAnnotationStore['_links']['type']['href'] = annotationSettings.type_url;
+        drupalAnnotationStore[annotationSettings.annotation_text] = {};
+        drupalAnnotationStore[annotationSettings.annotation_text]['value'] = annotation['resource']['0']['chars'];
+        var annotation_data = JSON.stringify(drupalAnnotationStore);
+      }
+      else {
+        drupalAnnotationStore['uri'] = {};
+        drupalAnnotationStore['uri'] = annotation['on']['source'];
+        drupalAnnotationStore['text'] = {};
+        drupalAnnotationStore['text'] = annotation['resource']['0']['chars'];
+        drupalAnnotationStore['data'] = {};
+        drupalAnnotationStore['data'] = annotation;
+        drupalAnnotationStore['type'] = 'image annotation';
+        var annotation_data = JSON.stringify(drupalAnnotationStore);
+      }
       jQuery.ajax({
         url: annotationUpdateUri,
         type: annotationSettings.annotation_update_method,
@@ -153,7 +165,7 @@
           "Content-Type": 'application/hal+json',
           "X-CSRF-Token": xcrfToken,
         },
-        data: JSON.stringify(drupalAnnotationStore),
+        data: annotation_data,
         contentType: "application/json; charset=utf-8",
         success: function(data) {
           // This returned data doesn't seem to be used anywhere.
@@ -176,26 +188,39 @@
       annotation['imgRefEntity'] = _this.imageRefEntityID;
       annotation['annotationOwner'] = this.annotationOwner;
       annotationSettings = jQuery.parseJSON(_this.annotationSettings);
-      // Generate annotation data to be stored as Drupal entity.
       var drupalAnnotationStore = {};
-      drupalAnnotationStore['_links'] = {};
-      drupalAnnotationStore['_links']['type'] = {};
-      drupalAnnotationStore['_links']['type']['href'] = annotationSettings.type_url;
-      if (annotationSettings.annotation_text != "title") {
-        drupalAnnotationStore['title'] = {};
-        drupalAnnotationStore['title']['value'] = annotation['resource']['0']['chars'];
+      if (annotationSettings.endpoint == "rest_endpoint") {
+        // Generate annotation data to be stored as Drupal entity.
+        drupalAnnotationStore['_links'] = {};
+        drupalAnnotationStore['_links']['type'] = {};
+        drupalAnnotationStore['_links']['type']['href'] = annotationSettings.type_url;
+        if (annotationSettings.annotation_text != "title") {
+          drupalAnnotationStore['title'] = {};
+          drupalAnnotationStore['title']['value'] = annotation['resource']['0']['chars'];
+        }
+        drupalAnnotationStore[annotationSettings.annotation_text] = {};
+        drupalAnnotationStore[annotationSettings.annotation_text]['value'] = annotation['resource']['0']['chars'];
+        drupalAnnotationStore[annotationSettings.annotation_image_entity] = {};
+        drupalAnnotationStore[annotationSettings.annotation_image_entity]['und'] = {};
+        drupalAnnotationStore[annotationSettings.annotation_image_entity]['und']['target_id'] = annotation['imgRefEntity'];
+        drupalAnnotationStore[annotationSettings.annotation_viewport] = {};
+        drupalAnnotationStore[annotationSettings.annotation_viewport]['value'] = annotation['on']['selector']['value'];
+        drupalAnnotationStore[annotationSettings.annotation_resource] = {};
+        drupalAnnotationStore[annotationSettings.annotation_resource]['value'] = annotation['on']['source'];
+        drupalAnnotationStore['type'] = {};
+        drupalAnnotationStore['type']['target_id'] = annotationSettings.annotation_entity_bundle;
+        var annotation_data = JSON.stringify(drupalAnnotationStore);
       }
-      drupalAnnotationStore[annotationSettings.annotation_text] = {};
-      drupalAnnotationStore[annotationSettings.annotation_text]['value'] = annotation['resource']['0']['chars'];
-      drupalAnnotationStore[annotationSettings.annotation_image_entity] = {};
-      drupalAnnotationStore[annotationSettings.annotation_image_entity]['und'] = {};
-      drupalAnnotationStore[annotationSettings.annotation_image_entity]['und']['target_id'] = annotation['imgRefEntity'];
-      drupalAnnotationStore[annotationSettings.annotation_viewport] = {};
-      drupalAnnotationStore[annotationSettings.annotation_viewport]['value'] = annotation['on']['selector']['value'];
-      drupalAnnotationStore[annotationSettings.annotation_resource] = {};
-      drupalAnnotationStore[annotationSettings.annotation_resource]['value'] = annotation['on']['source'];
-      drupalAnnotationStore['type'] = {};
-      drupalAnnotationStore['type']['target_id'] = annotationSettings.annotation_entity_bundle;
+      else {
+        drupalAnnotationStore['uri'] = {};
+        drupalAnnotationStore['uri'] = annotation['on']['source'];
+        drupalAnnotationStore['text'] = {};
+        drupalAnnotationStore['text'] = annotation['resource']['0']['chars'];
+        drupalAnnotationStore['data'] = {};
+        drupalAnnotationStore['data'] = annotation;
+        drupalAnnotationStore['type'] = 'image annotation';
+        var annotation_data = JSON.stringify(drupalAnnotationStore);
+      }
       jQuery.ajax({
         url: annotationSettings.annotation_create_uri,
         type: annotationSettings.annotation_create_method,
@@ -204,17 +229,23 @@
           "Content-Type": 'application/hal+json',
           "X-CSRF-Token": xcrfToken,
         },
-        data: JSON.stringify(drupalAnnotationStore),
+        data: annotation_data,
         contentType: "application/json; charset=utf-8",
         success: function(result, status, xhr) {
-          annotation['id'] = result;
-          annotation['@id'] = result;
-          annotation['fullId'] = result;
+          var annotation_id = result.id;
+          if (annotationSettings.endpoint == "rest_endpoint") {
+            if (result['nid']['0']['value'] != 'undefined') {
+              annotation_id = result['nid']['0']['value'];
+            }
+          }
+          annotation['id'] = annotation_id;
+          annotation['@id'] = annotation_id;
+          annotation['fullId'] = annotation_id;
           data = JSON.stringify(annotation);
-          data.fullId = result;
+          data.fullId = annotation_id;
           data["@id"] = $.genUUID();
           data.endpoint = _this;
-          _this.idMapper[data["@id"]] = result;
+          _this.idMapper[data["@id"]] = annotation_id;
           returnSuccess(data);
         },
         error: function() {

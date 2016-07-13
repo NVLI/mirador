@@ -49,13 +49,13 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#required' => TRUE,
       '#description' => t('Please enter the image server location'),
     );
-    $default_endpoint = $config->get('rest_endpoints');
-    if (empty($config->get('rest_endpoints'))) {
-      $default_endpoint = 1;
+    $default_endpoint = $config->get('endpoint');
+    if (empty($config->get('endpoint'))) {
+      $default_endpoint = 'custom_endpoint';
     }
-    $form['rest_endpoints'] = array(
+    $form['endpoint'] = array(
       '#type' => 'radios',
-      '#options' => array(1 => t('Rest Service'), 0 => t('Custom End Point')),
+      '#options' => array('rest_endpoint' => t('Rest Service'), 'custom_endpoint' => t('Custom End Point')),
       '#title' => t('Annotation Endpoint'),
       '#default_value' => $default_endpoint,
       '#description' => t('Select the annotation endpoint method'),
@@ -73,6 +73,11 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('annotation_entity'),
       '#size' => 30,
       '#description' => t('The entity to which the annotations should be stored.'),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="endpoint"]' => array('value' => 'rest_endpoint'),
+        ),
+      ),
     );
     $form['annotation_settings']['annotation_bundle'] = array(
       '#type' => 'textfield',
@@ -80,6 +85,11 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('annotation_bundle'),
       '#size' => 30,
       '#description' => t('The bundle of the entity to which the annotations should be stored.'),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="endpoint"]' => array('value' => 'rest_endpoint'),
+        ),
+      ),
     );
     // Annotation field mapping settings.
     $form['annotation_settings']['annotation_field_mappings'] = array(
@@ -87,7 +97,7 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#title' => t('Annotation Field Mapping'),
       '#states' => array(
         'visible' => array(
-          ':input[name="rest_endpoints"]' => array('value' => '1'),
+          ':input[name="endpoint"]' => array('value' => 'rest_endpoint'),
         ),
       ),
       '#open' => FALSE,
@@ -134,7 +144,7 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#title' => t('Annotation End points'),
       '#states' => array(
         'visible' => array(
-          ':input[name="rest_endpoints"]' => array('value' => '0'),
+          ':input[name="endpoint"]' => array('value' => 'custom_endpoint'),
         ),
       ),
       '#open' => FALSE,
@@ -198,7 +208,7 @@ class MiradorSettingsForm extends ConfigFormBase {
     $form['annotation_settings']['annotation_endpoints']['update']['annotation_update_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation update method'),
-      '#options' => array('PATCH' => t('PATCH'), 'GET' => t('GET')),
+      '#options' => array('PATCH' => t('PATCH'), 'PUT' => t('PUT')),
       '#default_value' => $config->get('annotation_update_method'),
       '#description' => t('The http method used for annotation updation'),
     );
@@ -235,76 +245,66 @@ class MiradorSettingsForm extends ConfigFormBase {
     if (!empty($form_state->getValue('iiif_server'))) {
       $config->set('iiif_server', $form_state->getValue('iiif_server'));
     }
+    if (!empty($form_state->getValue('endpoint'))) {
+      $config->set('endpoint', $form_state->getValue('endpoint'));
+    }
     if (!empty($form_state->getValue('annotation_entity'))) {
       $config->set('annotation_entity', $form_state->getValue('annotation_entity'));
     }
     if (!empty($form_state->getValue('annotation_bundle'))) {
       $config->set('annotation_bundle', $form_state->getValue('annotation_bundle'));
     }
-    if (!empty($form_state->getValue('annotation_text'))) {
-      $config->set('annotation_text', $form_state->getValue('annotation_text'));
-    }
-    if (!empty($form_state->getValue('annotation_viewport'))) {
-      $config->set('annotation_viewport', $form_state->getValue('annotation_viewport'));
-    }
-    if (!empty($form_state->getValue('annotation_image_entity'))) {
-      $config->set('annotation_image_entity', $form_state->getValue('annotation_image_entity'));
-    }
-    if (!empty($form_state->getValue('annotation_resource'))) {
-      $config->set('annotation_resource', $form_state->getValue('annotation_resource'));
-    }
-    if (!empty($form_state->getValue('annotation_language'))) {
-      $config->set('annotation_language', $form_state->getValue('annotation_language'));
-    }
-    if (!empty($form_state->getValue('annotation_create'))) {
-      $config->set('annotation_create', $form_state->getValue('annotation_create'));
-    }
-    if (!empty($form_state->getValue('annotation_create_method'))) {
-      $config->set('annotation_create_method', $form_state->getValue('annotation_create_method'));
-    }
-    if (!empty($form_state->getValue('annotation_search'))) {
-      $config->set('annotation_search', $form_state->getValue('annotation_search'));
-    }
-    if (!empty($form_state->getValue('annotation_search_method'))) {
-      $config->set('annotation_search_method', $form_state->getValue('annotation_search_method'));
-    }
-    if (!empty($form_state->getValue('annotation_update'))) {
-      $config->set('annotation_update', $form_state->getValue('annotation_update'));
-    }
-    if (!empty($form_state->getValue('annotation_update_method'))) {
-      $config->set('annotation_update_method', $form_state->getValue('annotation_update_method'));
-    }
-    if (!empty($form_state->getValue('annotation_delete'))) {
-      $config->set('annotation_delete', $form_state->getValue('annotation_delete'));
-    }
-    if (!empty($form_state->getValue('annotation_delete_method'))) {
-      $config->set('annotation_delete_method', $form_state->getValue('annotation_delete_method'));
-    }
-
-    // Set default value for annotation endpoints, If none specified.
-    if (empty($config->get('annotation_create'))) {
+    if ($form_state->getValue('endpoint') == "rest_endpoint") {
+      // Set default value for annotation endpoints, If none specified.
       $config->set('annotation_create', $base_url . '/entity/' . $form_state->getValue('annotation_entity'));
-    }
-    if (empty($config->get('annotation_create_method'))) {
       $config->set('annotation_create_method', 'POST');
-    }
-    if (empty($config->get('annotation_search'))) {
       $config->set('annotation_search', $base_url . '/annotation/search/{image_entity_id}');
-    }
-    if (empty($config->get('annotation_search_method'))) {
       $config->set('annotation_search_method', 'GET');
-    }
-    if (empty($config->get('annotation_update'))) {
       $config->set('annotation_update', $base_url . '/' . $form_state->getValue('annotation_entity') . '/{annotation_id}');
-    }
-    if (empty($config->get('annotation_update_method'))) {
       $config->set('annotation_update_method', 'PATCH');
-    }
-    if (empty($config->get('annotation_delete'))) {
       $config->set('annotation_delete', $base_url . '/' . $form_state->getValue('annotation_entity') . '/{annotation_id}');
-    }
-    if (empty($config->get('annotation_delete_method'))) {
       $config->set('annotation_delete_method', 'DELETE');
+    }
+    else {
+      if (!empty($form_state->getValue('annotation_text'))) {
+        $config->set('annotation_text', $form_state->getValue('annotation_text'));
+      }
+      if (!empty($form_state->getValue('annotation_viewport'))) {
+        $config->set('annotation_viewport', $form_state->getValue('annotation_viewport'));
+      }
+      if (!empty($form_state->getValue('annotation_image_entity'))) {
+        $config->set('annotation_image_entity', $form_state->getValue('annotation_image_entity'));
+      }
+      if (!empty($form_state->getValue('annotation_resource'))) {
+        $config->set('annotation_resource', $form_state->getValue('annotation_resource'));
+      }
+      if (!empty($form_state->getValue('annotation_language'))) {
+        $config->set('annotation_language', $form_state->getValue('annotation_language'));
+      }
+      if (!empty($form_state->getValue('annotation_create'))) {
+        $config->set('annotation_create', $form_state->getValue('annotation_create'));
+      }
+      if (!empty($form_state->getValue('annotation_create_method'))) {
+        $config->set('annotation_create_method', $form_state->getValue('annotation_create_method'));
+      }
+      if (!empty($form_state->getValue('annotation_search'))) {
+        $config->set('annotation_search', $form_state->getValue('annotation_search'));
+      }
+      if (!empty($form_state->getValue('annotation_search_method'))) {
+        $config->set('annotation_search_method', $form_state->getValue('annotation_search_method'));
+      }
+      if (!empty($form_state->getValue('annotation_update'))) {
+        $config->set('annotation_update', $form_state->getValue('annotation_update'));
+      }
+      if (!empty($form_state->getValue('annotation_update_method'))) {
+        $config->set('annotation_update_method', $form_state->getValue('annotation_update_method'));
+      }
+      if (!empty($form_state->getValue('annotation_delete'))) {
+        $config->set('annotation_delete', $form_state->getValue('annotation_delete'));
+      }
+      if (!empty($form_state->getValue('annotation_delete_method'))) {
+        $config->set('annotation_delete_method', $form_state->getValue('annotation_delete_method'));
+      }
     }
     $config->save();
     parent::submitForm($form, $form_state);
