@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\mirdador\Controller\MiradorManifestController.
+ * Contains \Drupal\mirador_annotation\Controller\MiradorAnnotationController.
  */
 
-namespace Drupal\mirador\Controller;
+namespace Drupal\mirador_annotation\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\JsonResponse;

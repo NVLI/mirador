@@ -11,9 +11,3 @@ mirador.manifest:
     _controller: '\Drupal\mirador\Controller\MiradorManifestController::getManifest'
   requirements:
     _permission: 'access content'
-mirador.annotation:
-  path: '/annotation/search/{image_entity_id}'
-  defaults:
-    _controller: '\Drupal\mirador\Controller\MiradorAnnotationController::searchAnnotation'
-  requirements:
-    _permission: 'access content'
