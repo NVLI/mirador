@@ -255,17 +255,6 @@ class MiradorSettingsForm extends ConfigFormBase {
       $config->set('annotation_bundle', $form_state->getValue('annotation_bundle'));
     }
     if ($form_state->getValue('endpoint') == "rest_endpoint") {
-      // Set default value for annotation endpoints, If none specified.
-      $config->set('annotation_create', $base_url . '/entity/' . $form_state->getValue('annotation_entity'));
-      $config->set('annotation_create_method', 'POST');
-      $config->set('annotation_search', $base_url . '/annotation/search/{image_entity_id}');
-      $config->set('annotation_search_method', 'GET');
-      $config->set('annotation_update', $base_url . '/' . $form_state->getValue('annotation_entity') . '/{annotation_id}');
-      $config->set('annotation_update_method', 'PATCH');
-      $config->set('annotation_delete', $base_url . '/' . $form_state->getValue('annotation_entity') . '/{annotation_id}');
-      $config->set('annotation_delete_method', 'DELETE');
-    }
-    else {
       if (!empty($form_state->getValue('annotation_text'))) {
         $config->set('annotation_text', $form_state->getValue('annotation_text'));
       }
@@ -281,6 +270,17 @@ class MiradorSettingsForm extends ConfigFormBase {
       if (!empty($form_state->getValue('annotation_language'))) {
         $config->set('annotation_language', $form_state->getValue('annotation_language'));
       }
+      // Set default value for annotation endpoints, If none specified.
+      $config->set('annotation_create', $base_url . '/entity/' . $form_state->getValue('annotation_entity'));
+      $config->set('annotation_create_method', 'POST');
+      $config->set('annotation_search', $base_url . '/annotation/search/{image_entity_id}');
+      $config->set('annotation_search_method', 'GET');
+      $config->set('annotation_update', $base_url . '/' . $form_state->getValue('annotation_entity') . '/{annotation_id}');
+      $config->set('annotation_update_method', 'PATCH');
+      $config->set('annotation_delete', $base_url . '/' . $form_state->getValue('annotation_entity') . '/{annotation_id}');
+      $config->set('annotation_delete_method', 'DELETE');
+    }
+    else {
       if (!empty($form_state->getValue('annotation_create'))) {
         $config->set('annotation_create', $form_state->getValue('annotation_create'));
       }
