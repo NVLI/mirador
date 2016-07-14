@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Creates canvas for mirador.
+ */
+
 namespace Drupal\mirador;
 
 /**

@@ -18,14 +18,14 @@ class SharedCanvasManifest {
   /**
    * Initiate the manifest.
    */
-  public function __construct($id, $label, $description, $attributes, $license, $logo, $metadata) {
+  public function __construct($id, $image_viewer_data) {
     $this->id = $id;
-    $this->objectLabel = $label;
-    $this->description = $description;
-    $this->attributes = $attributes;
-    $this->license = $license;
-    $this->logo = $logo;
-    $this->metadata = $metadata;
+    $this->objectLabel = $image_viewer_data['label'];
+    $this->description = $image_viewer_data['description'];
+    $this->attributes = $image_viewer_data['attribution'];
+    $this->license = $image_viewer_data['license'];
+    $this->logo = $image_viewer_data['logo'];
+    $this->metadata = $image_viewer_data['metadata'];
   }
 
   /**

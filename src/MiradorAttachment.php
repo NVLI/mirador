@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * An implementation of PageAttachmentInterface for the mirador library.
+ */
+
 namespace Drupal\mirador;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;

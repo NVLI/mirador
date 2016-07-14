@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * ActivationCheckInterface.
+ */
+
 namespace Drupal\mirador;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
