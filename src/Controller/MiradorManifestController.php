@@ -93,27 +93,32 @@ class MiradorManifestController extends ControllerBase {
 
     // Fetch the label, if specified.
     if (!empty($settings['label'])) {
-      $image_viewer_data['label'] = $entity->$settings['label']->value;
+      $label_setting = $settings['label'];
+      $image_viewer_data['label'] = $entity->$label_setting->value;
       unset($settings['label']);
     }
     // Fetch the description, if specified.
     if (!empty($settings['description'])) {
-      $image_viewer_data['description'] = $entity->$settings['description']->value;
+      $desc_setting = $settings['description'];
+      $image_viewer_data['description'] = $entity->$desc_setting->value;
       unset($settings['description']);
     }
     // Fetch the rights value, if specified.
     if (!empty($settings['license'])) {
-      $image_viewer_data['license'] = $entity->$settings['license']->value;
+      $licence_setting = $settings['license'];
+      $image_viewer_data['license'] = $entity->$licence_setting->value;
       unset($settings['license']);
     }
     // Fetch the $attributes value, if specified.
     if (!empty($settings['attribution'])) {
-      $image_viewer_data['attribution'] = $entity->$settings['attribution']->value;
+      $attribution_setting = $settings['attribution'];
+      $image_viewer_data['attribution'] = $entity->$attribution_setting->value;
       unset($settings['attribution']);
     }
     // Fetch the logo value, if specified.
     if (!empty($settings['logo'])) {
-      $image_viewer_data['logo'] = $entity->$settings['logo']->value;
+      $logo_setting = $settings['logo'];
+      $image_viewer_data['logo'] = $entity->$logo_setting->value;
       unset($settings['logo']);
     }
     if (!empty($settings)) {
