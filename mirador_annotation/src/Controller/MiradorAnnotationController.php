@@ -11,7 +11,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Controller routines for manifest creation.
+ * Controller routines for mirador annotations creation.
  */
 class MiradorAnnotationController extends ControllerBase {
 

@@ -14,8 +14,9 @@ use Drupal\Core\Config\ConfigFactoryInterface;
  * An implementation of PageAttachmentInterface for the mirador library.
  */
 class MiradorAttachment implements ElementAttachmentInterface {
+
   /**
-   * The service to determin if mirador should be activated.
+   * The service to determine if mirador should be activated.
    *
    * @var \Drupal\mirador\ActivationCheckInterface
    */

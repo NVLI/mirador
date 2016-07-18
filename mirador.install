@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Install, update and uninstall functions for the colorbox module.
+ * Install, update and uninstall functions for the mirador module.
  */
 
 use Drupal\Component\Utility\Unicode;

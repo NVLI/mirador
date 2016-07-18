@@ -57,24 +57,24 @@ class Canvas {
         ),
       ),
       'images' => array(
-      array(
-        '@id' => $this->imageUri,
-        '@type' => 'oa:Annotation',
-        'motivation' => 'sc:Painting',
-        'on' => $this->objectId,
-        'resource' => array(
-          '@id' => $this->resource_uri,
-          '@type' => 'dctypes:Image',
-          'format' => $this->imageFormat,
-          'height' => $this->imageHeight,
-          'width' => $this->imageWidth,
-          'service' => array(
-            '@context' => 'http://iiif.io/api/image/2/context.json',
+        array(
+          '@id' => $this->imageUri,
+          '@type' => 'oa:Annotation',
+          'motivation' => 'sc:Painting',
+          'on' => $this->objectId,
+          'resource' => array(
             '@id' => $this->resource_uri,
-            'profile' => 'http://iiif.io/api/image/2/level2.json',
+            '@type' => 'dctypes:Image',
+            'format' => $this->imageFormat,
+            'height' => $this->imageHeight,
+            'width' => $this->imageWidth,
+            'service' => array(
+              '@context' => 'http://iiif.io/api/image/2/context.json',
+              '@id' => $this->resource_uri,
+              'profile' => 'http://iiif.io/api/image/2/level2.json',
+            ),
           ),
         ),
-      ),
       ),
     );
     return $manifest_canvas;
