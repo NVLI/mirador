@@ -47,7 +47,7 @@ Installation:
 1. Install the module as normal, see link for instructions.
    Link: https://www.drupal.org/documentation/install/modules-themes/modules-8
 2. Download compiled Mirador javascript library
-   (https://github.com/IIIF/mirador/releases/download/v2.0.0/mirador.zip) into Drupal's libraries
+   (https://github.com/NVLI/mirador-js/archive/master.zip) into Drupal's libraries
    directory (Create one, if libraries directory is not present). Verify the file permission is web servable. Make sure the path to the plugin is libraries/mirador/mirador.js.
 3. Set the IIIF image server in path /admin/config/media/mirador.
    In the image server specify the path upto files directory, in simple resolver
