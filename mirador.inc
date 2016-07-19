@@ -65,7 +65,7 @@ function template_preprocess_mirador_formatter(&$variables) {
   $annotation_settings['annotation_image_entity'] = $config->get('annotation_image_entity');
   $annotation_settings['annotation_owner'] = $config->get('annotation_owner');
   $annotation_settings['annotation_resource'] = $config->get('annotation_resource');
-  $annotation_settings['annotation_language'] = $config->get('annotation_language');
+  $annotation_settings['annotation_data'] = $config->get('annotation_data');
 
   // Annotation endpoint settings.
   $annotation_settings['annotation_create_uri'] = $config->get('annotation_create');

@@ -130,12 +130,12 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#size' => 30,
       '#description' => t('The machine name of the field to store the annotation resource url.'),
     );
-    $form['annotation_settings']['annotation_field_mappings']['annotation_language'] = array(
+    $form['annotation_settings']['annotation_field_mappings']['annotation_data'] = array(
       '#type' => 'textfield',
-      '#title' => t('Annotation Language'),
-      '#default_value' => $config->get('annotation_language'),
+      '#title' => t('Annotation Data'),
+      '#default_value' => $config->get('annotation_data'),
       '#size' => 30,
-      '#description' => t('The machine name of the field to store the annotation language.'),
+      '#description' => t('The machine name of the field to store the annotation data.'),
     );
 
     // Annotation endpoint settings.
@@ -267,8 +267,8 @@ class MiradorSettingsForm extends ConfigFormBase {
       if (!empty($form_state->getValue('annotation_resource'))) {
         $config->set('annotation_resource', $form_state->getValue('annotation_resource'));
       }
-      if (!empty($form_state->getValue('annotation_language'))) {
-        $config->set('annotation_language', $form_state->getValue('annotation_language'));
+      if (!empty($form_state->getValue('annotation_data'))) {
+        $config->set('annotation_data', $form_state->getValue('annotation_data'));
       }
       // Set default value for annotation endpoints, If none specified.
       $config->set('annotation_create', $base_url . '/entity/' . $form_state->getValue('annotation_entity'));

@@ -75,20 +75,24 @@
           media: "image",
           limit: 100,
         },
-
         contentType: "application/json; charset=utf-8",
         success: function(data) {
+          jQuery.each(data, function(index, value) {
+            value.data['@id'] = value.id;
+            value.data['resource']['0']['chars'] = value.text;
+            value.data['id'] = value.id;
+            value.data['@fullId'] = value.id;
+            annotationsList = value.data;
+            _this.annotationsList.push(annotationsList);
+            value.fullId = value.id;
+            value["@id"] = $.genUUID();
+            _this.idMapper[value["@id"]] = value.fullId;
+            value.endpoint = _this;
+          });
           if (typeof successCallback === "function") {
-            successCallback(data);
+            successCallback(_this.annotationsList);
           }
           else {
-            _this.annotationsList = data;
-            jQuery.each(_this.annotationsList, function(index, value) {
-              value.fullId = value["@id"];
-              value["@id"] = $.genUUID();
-              _this.idMapper[value["@id"]] = value.fullId;
-              value.endpoint = _this;
-            });
             _this.dfd.resolve(false);
           }
         },
@@ -107,20 +111,18 @@
       var _this = this;
       annotationSettings = jQuery.parseJSON(_this.annotationSettings);
       var xcrfToken = _this.xcrfToken;
-      var drupal_annotation_id = this.idMapper[annotationID];
+      var drupal_annotation_id = annotationID;
       var annotationDeleteUri = annotationSettings.annotation_delete_uri;
       annotationDeleteUri = annotationDeleteUri.replace("{annotation_id}", drupal_annotation_id);
       jQuery.ajax({
         url: annotationDeleteUri,
         type: annotationSettings.annotation_delete_method,
         headers: {
-          "Content-Type": 'application/hal+json',
+          "Content-Type": 'application/json',
           "X-CSRF-Token": xcrfToken,
+          "id": drupal_annotation_id,
         },
-        data: {
-          id: drupal_annotation_id,
-        },
-        contentType: "*",
+        contentType: "application/json; charset=utf-8",
         success: function(data) {
           returnSuccess();
         },
@@ -136,8 +138,8 @@
           _this = this;
       shortId = annotation["@id"];
       var xcrfToken = _this.xcrfToken;
-      annotation["@id"] = annotation.fullId;
-      annotationID = annotation.fullId;
+      annotation["@id"] = annotation['@fullId'];
+      annotationID = annotation["id"];
       annotationSettings = jQuery.parseJSON(_this.annotationSettings);
       var annotationUpdateUri = annotationSettings.annotation_update_uri;
       annotationUpdateUri = annotationUpdateUri.replace("{annotation_id}", annotationID);
@@ -213,6 +215,8 @@
         drupalAnnotationStore[annotationSettings.annotation_viewport]['value'] = annotation['on']['selector']['value'];
         drupalAnnotationStore[annotationSettings.annotation_resource] = {};
         drupalAnnotationStore[annotationSettings.annotation_resource]['value'] = annotation['on']['source'];
+        drupalAnnotationStore[annotationSettings.annotation_data] = {};
+        drupalAnnotationStore[annotationSettings.annotation_data]['value'] = JSON.stringify(annotation);
         drupalAnnotationStore['type'] = {};
         drupalAnnotationStore['type']['target_id'] = annotationSettings.annotation_entity_bundle;
         var annotation_data = JSON.stringify(drupalAnnotationStore);
