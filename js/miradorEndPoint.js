@@ -60,6 +60,7 @@
     search: function(options, successCallback, errorCallback) {
       var _this = this;
       annotationSettings = jQuery.parseJSON(_this.annotationSettings);
+      annotationSearchUri = annotationSettings.annotation_search_uri.replace("{resource_entity_id}", _this.imageRefEntityID);
       // Clear out current list.
       this.annotationsList = [];
       jQuery.ajax({
@@ -69,10 +70,10 @@
         headers: {
         },
         data: {
-          uri: annotationSettings.annotation_search_uri,
-          imageRefEntityID: options.imageRefEntityID,
+          uri:options.uri,
+          id: _this.imageRefEntityID,
           media: "image",
-          limit: 10000
+          limit: 100,
         },
 
         contentType: "application/json; charset=utf-8",
@@ -116,6 +117,9 @@
           "Content-Type": 'application/hal+json',
           "X-CSRF-Token": xcrfToken,
         },
+        data: {
+          id: drupal_annotation_id,
+        },
         contentType: "*",
         success: function(data) {
           returnSuccess();
@@ -150,6 +154,8 @@
       else {
         drupalAnnotationStore['uri'] = {};
         drupalAnnotationStore['uri'] = annotation['on']['source'];
+        drupalAnnotationStore['id'] = {};
+        drupalAnnotationStore['id'] = annotationID;
         drupalAnnotationStore['text'] = {};
         drupalAnnotationStore['text'] = annotation['resource']['0']['chars'];
         drupalAnnotationStore['data'] = {};
@@ -216,6 +222,8 @@
         drupalAnnotationStore['uri'] = annotation['on']['source'];
         drupalAnnotationStore['text'] = {};
         drupalAnnotationStore['text'] = annotation['resource']['0']['chars'];
+        drupalAnnotationStore['id'] = {};
+        drupalAnnotationStore['id'] = _this.imageRefEntityID;
         drupalAnnotationStore['data'] = {};
         drupalAnnotationStore['data'] = annotation;
         drupalAnnotationStore['media'] = 'image';

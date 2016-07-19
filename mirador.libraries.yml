@@ -5,6 +5,15 @@ mirador:
     name: MIT
     gpl-compatible: false
   js:
+    /libraries/mirador/jQuery-1.9.1.min.js: {}
+    /libraries/mirador/jquery.ui.min.js: {}
+    /libraries/mirador/jquery.scroll.js: {}
+    /libraries/mirador/jquery.qtip.min.js: {}
+    /libraries/mirador/handlebars.4.0.5.js: {}
+    /libraries/mirador/openseadragon-1.1.1.min.js: {}
+    /libraries/mirador/d3.v3.min.js: {}
+    /libraries/mirador/uri.min.js: {}
+    /libraries/mirador/jquery.no-conflict.js: {}
     /libraries/mirador/mirador.js: { minified: false }
   css:
     theme:
