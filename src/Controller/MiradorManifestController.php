@@ -11,6 +11,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\mirador\SharedCanvasManifest;
 use Drupal\mirador\Canvas;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * Controller routines for manifest creation.
@@ -20,7 +21,7 @@ class MiradorManifestController extends ControllerBase {
   /**
    * Page callback: Returns manifest json.
    */
-  public function getManifest($entity_type, $field_name, $entity_id, $settings) {
+  public function getManifest($entity_type, $field_name, $entity_id) {
     $mime_type = "image/jpg";
     // Set a default value for width and height, if none specified by the user.
     $width = $height = 4217;
@@ -32,6 +33,7 @@ class MiradorManifestController extends ControllerBase {
     // @to-do: Display a message if no server specified.
     // Unserialize the settings to get the settings array.
     $settings = unserialize($settings);
+
 
     // Fetch the width, if specified.
     if (!empty($settings['width'])) {
@@ -46,6 +48,13 @@ class MiradorManifestController extends ControllerBase {
 
     // Load the entity.
     $entity = entity_load($entity_type, $entity_id);
+
+    //Fetch the mirador settings.
+    $field_view = $entity->$field_name->view('mirador');
+    $mirador_settings = $field_view[0]['#settings']['mirador_settings'];
+    // Parse the mirador settings YAML.
+    $yaml = new Parser();
+    $settings = $yaml->parse($mirador_settings);
 
     // Get the resource data.
     $resource_data = $this->getResourceData($field_name, $entity);

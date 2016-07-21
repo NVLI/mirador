@@ -60,7 +60,6 @@
     search: function(options, successCallback, errorCallback) {
       var _this = this;
       annotationSettings = jQuery.parseJSON(_this.annotationSettings);
-      annotationSearchUri = annotationSettings.annotation_search_uri.replace("{resource_entity_id}", _this.imageRefEntityID);
       // Clear out current list.
       this.annotationsList = [];
       jQuery.ajax({

@@ -6,7 +6,7 @@ mirador.admin_settings:
   requirements:
     _permission: 'administer site configuration'
 mirador.manifest:
-  path: '/mirador/manifest/{entity_type}/{field_name}/{entity_id}/{settings}'
+  path: '/mirador/manifest/{entity_type}/{field_name}/{entity_id}'
   defaults:
     _controller: '\Drupal\mirador\Controller\MiradorManifestController::getManifest'
   requirements:

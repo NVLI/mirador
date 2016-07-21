@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Template\Attribute;
-use Symfony\Component\Yaml\Parser;
+
 
 /**
  * Prepares variables for mirador formatter templates.
@@ -46,13 +46,8 @@ function template_preprocess_mirador_formatter(&$variables) {
   $field_name = $item->getParent()->getName();
   $mirador_viewer_id = 'mirador-viewer-' . $id;
 
-  // Parse the mirador settings YAML.
-  $yaml = new Parser();
-  $mirador_settings_array = $yaml->parse($settings['mirador_settings']);
-  $mirador_settings = serialize($mirador_settings_array);
-
   // Generate manifest uri and pass to jquery.
-  $manifest_uri = $base_url . '/mirador/manifest/' . $entity_type_id . '/' . $field_name . '/' . $id . '/' . $mirador_settings;
+  $manifest_uri = $base_url . '/mirador/manifest/' . $entity_type_id . '/' . $field_name . '/' . $id;
   $variables['#attached']['drupalSettings']['init']['entity']['manifest_uri'] = $manifest_uri;
   $variables['#attached']['drupalSettings']['init']['entity']['viewer_id'] = $mirador_viewer_id;
   $variables['#attached']['drupalSettings']['init']['entity']['entity_id'] = $id;
