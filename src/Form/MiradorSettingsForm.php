@@ -50,22 +50,50 @@ class MiradorSettingsForm extends ConfigFormBase {
       '#description' => t('Please enter the image server location with trailing slash. eg:  http://www.example.org/iiif/.'),
     );
     $default_endpoint = $config->get('endpoint');
+    $disable_rest_endpoint = TRUE;
+    $disable_rest_endpoint_help_text = t(' Please enable the modules RESTfull Web Services
+      and Mirador Annotations for using "Rest Service" Annotation Endpoint.');
+    if (\Drupal::moduleHandler()->moduleExists('rest') &&
+      \Drupal::moduleHandler()->moduleExists('mirador_annotation')) {
+      $disable_rest_endpoint = FALSE;
+      $disable_rest_endpoint_help_text = NULL;
+    }
     if (empty($config->get('endpoint'))) {
       $default_endpoint = 'custom_endpoint';
     }
     $form['endpoint'] = array(
       '#type' => 'radios',
-      '#options' => array('rest_endpoint' => t('Rest Service'), 'custom_endpoint' => t('Custom End Point')),
+      'rest_endpoint' => array(
+        '#type' => 'radio',
+        '#title' => t('Rest Service'),
+        '#return_value' => 'rest_endpoint',
+        '#default_value' => $default_endpoint,
+        '#parents' => array('endpoint'),
+        '#spawned' => TRUE,
+        '#disabled' => $disable_rest_endpoint,
+        '#description' => $disable_rest_endpoint_help_text,
+      ),
+      'custom_endpoint' => array(
+        '#type' => 'radio',
+        '#title' => t('Custom End Point'),
+        '#return_value' => 'custom_endpoint',
+        '#default_value' => $default_endpoint,
+        '#parents' => array('endpoint'),
+        '#spawned' => TRUE,
+      ),
       '#title' => t('Annotation Endpoint'),
       '#default_value' => $default_endpoint,
-      '#description' => t('Select the annotation endpoint method'),
+      '#description' => t('Select the annotation endpoint method.'),
     );
     $form['annotation_settings'] = array(
       '#type' => 'details',
       '#title' => t('Annotation Settings'),
       '#open' => FALSE,
-      '#prefix' => '<div class = "test">',
-      '#suffix' => '</div>',
+      '#states' => array(
+        'visible' => array(
+          ':input[name="endpoint"]' => array('value' => 'rest_endpoint'),
+        ),
+      ),
     );
     $form['annotation_settings']['annotation_entity'] = array(
       '#type' => 'textfield',
@@ -139,7 +167,7 @@ class MiradorSettingsForm extends ConfigFormBase {
     );
 
     // Annotation endpoint settings.
-    $form['annotation_settings']['annotation_endpoints'] = array(
+    $form['annotation_endpoints'] = array(
       '#type' => 'details',
       '#title' => t('Annotation End points'),
       '#states' => array(
@@ -151,19 +179,19 @@ class MiradorSettingsForm extends ConfigFormBase {
     );
 
     // Create endpoint.
-    $form['annotation_settings']['annotation_endpoints']['create'] = array(
+    $form['annotation_endpoints']['create'] = array(
       '#type' => 'details',
       '#title' => t('Create End point'),
       '#open' => FALSE,
     );
-    $form['annotation_settings']['annotation_endpoints']['create']['annotation_create'] = array(
+    $form['annotation_endpoints']['create']['annotation_create'] = array(
       '#type' => 'textfield',
       '#title' => t('Annotation create endpoint'),
       '#default_value' => $config->get('annotation_create'),
       '#size' => 30,
       '#description' => t('The annotation create endpoint'),
     );
-    $form['annotation_settings']['annotation_endpoints']['create']['annotation_create_method'] = array(
+    $form['annotation_endpoints']['create']['annotation_create_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation create method'),
       '#options' => array('POST' => t('POST'), 'GET' => t('GET')),
@@ -172,19 +200,19 @@ class MiradorSettingsForm extends ConfigFormBase {
     );
 
     // Search endpoint.
-    $form['annotation_settings']['annotation_endpoints']['search'] = array(
+    $form['annotation_endpoints']['search'] = array(
       '#type' => 'details',
       '#title' => t('Search End point'),
       '#open' => FALSE,
     );
-    $form['annotation_settings']['annotation_endpoints']['search']['annotation_search'] = array(
+    $form['annotation_endpoints']['search']['annotation_search'] = array(
       '#type' => 'textfield',
       '#title' => t('Annotation search endpoint'),
       '#default_value' => $config->get('annotation_search'),
       '#size' => 30,
       '#description' => t('The annotation search endpoint. please use token {resource_entity_id} for referring resource entity.'),
     );
-    $form['annotation_settings']['annotation_endpoints']['search']['annotation_search_method'] = array(
+    $form['annotation_endpoints']['search']['annotation_search_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation search method'),
       '#options' => array('GET' => t('GET')),
@@ -193,19 +221,19 @@ class MiradorSettingsForm extends ConfigFormBase {
     );
 
     // Update endpoint.
-    $form['annotation_settings']['annotation_endpoints']['update'] = array(
+    $form['annotation_endpoints']['update'] = array(
       '#type' => 'details',
       '#title' => t('Update End point'),
       '#open' => FALSE,
     );
-    $form['annotation_settings']['annotation_endpoints']['update']['annotation_update'] = array(
+    $form['annotation_endpoints']['update']['annotation_update'] = array(
       '#type' => 'textfield',
       '#title' => t('Annotation update endpoint'),
       '#default_value' => $config->get('annotation_update'),
       '#size' => 30,
       '#description' => t('The annotation update endpoint. please use token {annotation_id} for referring annotation entity.'),
     );
-    $form['annotation_settings']['annotation_endpoints']['update']['annotation_update_method'] = array(
+    $form['annotation_endpoints']['update']['annotation_update_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation update method'),
       '#options' => array('PATCH' => t('PATCH'), 'PUT' => t('PUT')),
@@ -214,19 +242,19 @@ class MiradorSettingsForm extends ConfigFormBase {
     );
 
     // Delete Eendpoint.
-    $form['annotation_settings']['annotation_endpoints']['delete'] = array(
+    $form['annotation_endpoints']['delete'] = array(
       '#type' => 'details',
       '#title' => t('Delete End point'),
       '#open' => FALSE,
     );
-    $form['annotation_settings']['annotation_endpoints']['delete']['annotation_delete'] = array(
+    $form['annotation_endpoints']['delete']['annotation_delete'] = array(
       '#type' => 'textfield',
       '#title' => t('Annotation delete endpoint'),
       '#default_value' => $config->get('annotation_delete'),
       '#size' => 30,
       '#description' => t('The annotation delete endpoint. please use token {annotation_id} for referring annotation entity.'),
     );
-    $form['annotation_settings']['annotation_endpoints']['delete']['annotation_delete_method'] = array(
+    $form['annotation_endpoints']['delete']['annotation_delete_method'] = array(
       '#type' => 'select',
       '#title' => t('Annotation delete method'),
       '#options' => array('DELETE' => t('DELETE')),
@@ -273,7 +301,7 @@ class MiradorSettingsForm extends ConfigFormBase {
       // Set default value for annotation endpoints, If none specified.
       $config->set('annotation_create', $base_url . '/entity/' . $form_state->getValue('annotation_entity'));
       $config->set('annotation_create_method', 'POST');
-      $config->set('annotation_search', $base_url . '/annotation/search/{image_entity_id}');
+      $config->set('annotation_search', $base_url . '/annotation/search/{resource_entity_id}');
       $config->set('annotation_search_method', 'GET');
       $config->set('annotation_update', $base_url . '/' . $form_state->getValue('annotation_entity') . '/{annotation_id}');
       $config->set('annotation_update_method', 'PATCH');
