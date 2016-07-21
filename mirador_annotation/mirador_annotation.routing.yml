@@ -1,5 +1,5 @@
 mirador_annotation.annotation_search:
-  path: '/annotation/search/{image_entity_id}'
+  path: '/annotation/search/{resource_entity_id}'
   defaults:
     _controller: '\Drupal\mirador_annotation\Controller\MiradorAnnotationController::searchAnnotation'
   requirements:

@@ -66,7 +66,7 @@ function template_preprocess_mirador_formatter(&$variables) {
   $annotation_settings['annotation_create_uri'] = $config->get('annotation_create');
   $annotation_settings['annotation_create_method'] = $config->get('annotation_create_method');
   $annotation_settings['annotation_search_uri'] = $config->get('annotation_search');
-  $annotation_settings['annotation_search_uri'] = str_replace("{image_entity_id}", $id, $annotation_settings['annotation_search_uri']);
+  $annotation_settings['annotation_search_uri'] = str_replace("{resource_entity_id}", $id, $annotation_settings['annotation_search_uri']);
   $annotation_settings['annotation_search_method'] = $config->get('annotation_search_method');
   $annotation_settings['annotation_update_uri'] = $config->get('annotation_update');
   $annotation_settings['annotation_update_method'] = $config->get('annotation_update_method');

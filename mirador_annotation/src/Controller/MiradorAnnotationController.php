@@ -18,9 +18,9 @@ class MiradorAnnotationController extends ControllerBase {
   /**
    * Page Callback: Search Annotation.
    */
-  public function searchAnnotation($image_entity_id) {
+  public function searchAnnotation($resource_entity_id) {
     $output = array();
-    $output = $this->getAnnotation($image_entity_id);
+    $output = $this->getAnnotation($resource_entity_id);
     return new JsonResponse($output);
   }
 

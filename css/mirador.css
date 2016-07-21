@@ -4,6 +4,10 @@
   height: 500px;
   position: initial !important;
 }
+.mirador-viewer #workspace .layout-slot,
+.mirador-viewer, #workspace {
+  height: 480px !important;
+}
 /* Disabling the edit and delete buttons of annotation for users with no permission.*/
 .annotate-no-permission .annotation-display.annotation-tooltip .button-container {
   display: none !important;
