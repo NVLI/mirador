@@ -39,7 +39,8 @@ class MiradorManifestController extends ControllerBase {
     // Parse the mirador settings YAML.
     $yaml = new Parser();
     $settings = $yaml->parse($mirador_settings);
-     // Fetch the width, if specified.
+
+    // Fetch the width, if specified.
     if (!empty($settings['width'])) {
       $width = $settings['width'];
       unset($settings['width']);
@@ -49,6 +50,7 @@ class MiradorManifestController extends ControllerBase {
       $height = $settings['height'];
       unset($settings['height']);
     }
+
     // Get the resource data.
     $resource_data = $this->getResourceData($field_name, $entity);
     $image_path = $resource_data['image_path'];
