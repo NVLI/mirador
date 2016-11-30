@@ -30,15 +30,10 @@ class MiradorManifestController extends ControllerBase {
     $config = \Drupal::config('mirador.settings');
     $iiif_image_server_location = $config->get('iiif_server');
 
-    // Load the entity.
-    $entity = entity_load($entity_type, $entity_id);
+    // @to-do: Display a message if no server specified.
+    // Unserialize the settings to get the settings array.
+    $settings = unserialize($settings);
 
-    //Fetch the mirador settings.
-    $field_view = $entity->$field_name->view('mirador');
-    $mirador_settings = $field_view[0]['#settings']['mirador_settings'];
-    // Parse the mirador settings YAML.
-    $yaml = new Parser();
-    $settings = $yaml->parse($mirador_settings);
 
     // Fetch the width, if specified.
     if (!empty($settings['width'])) {
@@ -50,6 +45,16 @@ class MiradorManifestController extends ControllerBase {
       $height = $settings['height'];
       unset($settings['height']);
     }
+
+    // Load the entity.
+    $entity = entity_load($entity_type, $entity_id);
+
+    //Fetch the mirador settings.
+    $field_view = $entity->$field_name->view('mirador');
+    $mirador_settings = $field_view[0]['#settings']['mirador_settings'];
+    // Parse the mirador settings YAML.
+    $yaml = new Parser();
+    $settings = $yaml->parse($mirador_settings);
 
     // Get the resource data.
     $resource_data = $this->getResourceData($field_name, $entity);
