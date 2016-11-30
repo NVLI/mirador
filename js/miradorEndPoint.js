@@ -86,7 +86,6 @@
             value.fullId = value.id;
             value["@id"] = $.genUUID();
             _this.idMapper[value["@id"]] = value.fullId;
-            _this.annotationId = value.id;
             value.endpoint = _this;
           });
           if (typeof successCallback === "function") {
@@ -111,9 +110,9 @@
       var _this = this;
       annotationSettings = jQuery.parseJSON(_this.annotationSettings);
       var xcrfToken = _this.xcrfToken;
-      var drupal_annotation_id = annotationID;
+      drupal_annotation_id = annotationID;
       var annotationDeleteUri = annotationSettings.annotation_delete_uri;
-      annotationDeleteUri = annotationDeleteUri.replace("{annotation_id}", _this.annotationId);
+      annotationDeleteUri = annotationDeleteUri.replace("{annotation_id}", drupal_annotation_id);
       jQuery.ajax({
         url: annotationDeleteUri,
         type: annotationSettings.annotation_delete_method,
@@ -154,15 +153,10 @@
         var annotation_data = JSON.stringify(drupalAnnotationStore);
       }
       else {
-        drupalAnnotationStore['uri'] = {};
-        drupalAnnotationStore['uri'] = annotation['on']['source'];
-        drupalAnnotationStore['id'] = {};
-        drupalAnnotationStore['id'] = annotationID;
-        drupalAnnotationStore['text'] = {};
-        drupalAnnotationStore['text'] = annotation['resource']['0']['chars'];
-        drupalAnnotationStore['data'] = {};
-        drupalAnnotationStore['data'] = annotation;
-        drupalAnnotationStore['media'] = 'image';
+        drupalAnnotationStore = {}
+        drupalAnnotationStore = annotation;
+        drupalAnnotationStore.text = annotation['resource']['0']['chars'];
+        drupalAnnotationStore.media = 'image';
         var annotation_data = JSON.stringify(drupalAnnotationStore);
       }
       jQuery.ajax({
@@ -233,8 +227,10 @@
         drupalAnnotationStore['media'] = 'image';
         var annotation_data = JSON.stringify(drupalAnnotationStore);
       }
+      var annotationCreateUri = annotationSettings.annotation_create_uri;
+      annotationCreateUri = annotationCreateUri.replace("{resource_entity_id}", annotation['imgRefEntity']);
       jQuery.ajax({
-        url: annotationSettings.annotation_create_uri,
+        url: annotationCreateUri,
         type: annotationSettings.annotation_create_method,
         dataType: 'json',
         headers: {
@@ -253,12 +249,11 @@
           annotation['id'] = annotation_id;
           annotation['@id'] = annotation_id;
           annotation['fullId'] = annotation_id;
-          data = JSON.stringify(annotation);
+          data = annotation;
           data.fullId = annotation_id;
-          data["@id"] = $.genUUID();
+          data.id = annotation_id;
           data.endpoint = _this;
-          _this.idMapper[data["@id"]] = annotation_id;
-          _this.annotationId = annotation_id;
+          _this.annotation_id = annotation_id;
           returnSuccess(data);
         },
         error: function() {

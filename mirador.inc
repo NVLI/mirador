@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Template\Attribute;
+use Drupal\Core\Url;
 
 
 /**
@@ -75,6 +76,9 @@ function template_preprocess_mirador_formatter(&$variables) {
   $annotation_settings['type_url'] = $base_url . '/rest/type/' . $config->get('annotation_entity') . '/' . $config->get('annotation_bundle');
   $annotation_settings['endpoint'] = $config->get('endpoint');
   $annotation_settings['token_url'] = NULL;
+  $current_path = \Drupal::service('path.current')->getPath();
+  $login_url = Url::fromRoute('user.login', ['destination' => $current_path]);
+  $login_url = \Drupal::l(t('Please login to annotate'), $login_url);
   // If rest endpoint is enabled, then use the rest
   // token for user authentication.
   if ($config->get('endpoint') == "rest_endpoint") {
@@ -90,6 +94,7 @@ function template_preprocess_mirador_formatter(&$variables) {
   $variables['#attached']['drupalSettings']['init']['annotation_settings'] = json_encode($annotation_settings);
   $variables['#attached']['drupalSettings']['init']['perform_annotation'] = $perform_annotation;
   $variables['#attached']['drupalSettings']['init']['endpoint'] = $config->get('endpoint');
+  $variables['#attached']['drupalSettings']['init']['login_url'] = $login_url;
 
   $variables['attributes'] = new Attribute();
   $variables['attributes']['class'] = $classes_array;
